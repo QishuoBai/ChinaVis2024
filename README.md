@@ -10,6 +10,8 @@
 
 ### 前端
 
-cd ChinaVis2024\
-npm install  \
+```bash
+cd ChinaVis2024
+npm install
 npm run dev
+```
