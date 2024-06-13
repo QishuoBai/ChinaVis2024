@@ -1,36 +1,25 @@
 <template>
     <h1>临时组件</h1>
     <div class="container" style="height: 50vh; width: 100vw;"></div>
-    <p>{{starttime}}-{{endtime}}</p>
-    <button @click="drawTest">button</button>
 </template>
 
 <script>
 // import axios from 'axios';
 import * as d3 from 'd3';
+import jsdata from '../../public/data/OneStudent.json';
 export default {
     data() {
         return {
-            data: null,
-            arrdata: [],
+            data: jsdata,
         };
     },
     mounted() {
-        this.fetchData();
+        this.drawTest(this.data);
     },
     methods: {
-        fetchData(){
-            d3.json('./public/data/OneStudent.json')
-            .then((res) => {
-                this.data = res;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        },
-        drawTest() {
+        drawTest(data) {
             // 转换时间格式
-            this.data.map((item) => {
+            data.map((item) => {
                 item.timeFormatted = new Date(item.time * 1000).toLocaleString();
                 // console.log(item.timeFormatted);
                 return item;
@@ -50,10 +39,10 @@ export default {
                 .attr("style", "max-width: 100%; height: auto;")
                 .call(zoom);
             const xScale = d3.scaleTime()
-                .domain(d3.extent(this.data, d => new Date(d.timeFormatted)))
+                .domain(d3.extent(data, d => new Date(d.timeFormatted)))
                 .range([marginLeft, width-marginRight]);
             const yScale = d3.scaleLinear()
-                .domain([0, d3.max(this.data, d => d.score)])
+                .domain([0, d3.max(data, d => d.score)])
                 .range([height-marginBottom, marginTop]);
             const xAxis = d3.axisBottom(xScale);
             const yAxis = d3.axisLeft(yScale);
@@ -66,7 +55,7 @@ export default {
                 .attr("transform", `translate(${marginLeft}, 0)`)
                 .call(yAxis);
             const circles = svg.append("g").selectAll("circle")
-                .data(this.data)
+                .data(data)
                 .enter()
                 .append("circle")
                 .attr("cx", d => xScale(new Date(d.timeFormatted)))
