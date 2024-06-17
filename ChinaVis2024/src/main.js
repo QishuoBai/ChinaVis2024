@@ -13,8 +13,12 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 
+// Antd
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
+
 const app = createApp(App)
 
 registerPlugins(app)
 
-app.mount('#app')
+app.use(Antd).mount('#app')
