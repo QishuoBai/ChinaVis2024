@@ -1,7 +1,7 @@
 <template>
   <div>
     <div ref="Title_Container" class="ml-3 position-sticky top-0"></div>
-    <div class="w-100 d-flex flex-row">
+    <div class="d-flex flex-row">
       <div class="position-sticky left-0 bg-grey-lighten-2">
         <v-icon class="ma-2" icon="mdi-account"></v-icon>
       </div>

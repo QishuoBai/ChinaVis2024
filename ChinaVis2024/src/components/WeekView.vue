@@ -1,19 +1,20 @@
 <template>
-  <div class="h-100 w-100 pa-2 d-flex flex-column">
+  <div ref="container" class="h-100 w-100 pa-2 d-flex flex-column">
     <div class="text-body-1 font-weight-bold">Scatter View</div>
     <v-divider></v-divider>
-    <div class="w-100" style="overflow: scroll;">
-      <!-- <WeeksOfStu
+    <div ref="sub_container" class="flex-grow-1" style="overflow: scroll;height: 0px;width: 1000px">
+        <WeeksOfStu
           v-for="id in stu_IDs"
           :key="id"
           :dataobj="findObjectByID(id)"
-        /> -->
-    </div>
+        />
+      </div>
   </div>
 </template>
 <script>
 import WeeksOfStu from "@/components/sub_components/WeeksOfStu.vue";
 import WeekRosedata from "../../public/data/WeekRosedata.json";
+import * as d3 from 'd3';
 export default {
   components: {
     WeeksOfStu,
@@ -29,6 +30,12 @@ export default {
         "63eef37311aaac915a45",
       ], //需要绘制的学生ID
     };
+  },
+  mounted() {
+    this.$refs.sub_container.style.width = this.$refs.container.clientWidth;
+    console.log(this.$refs.container.clientWidth);
+    console.log(this.$refs.sub_container.clientWidth);
+    console.log(this.$refs.sub_container.style.width);
   },
   methods: {
     findObjectByID(id) {
