@@ -12,7 +12,9 @@
       </div>
       <div class="h-50 d-flex flex-row">
         <div id="PortraitView" style="width:30%" class="border-sm"></div>
-        <div id="TitleView" class="flex-grow-1 border-sm"></div>
+        <div id="TitleView" class="flex-grow-1 border-sm">
+          <TitleView />
+        </div>
       </div>
     </div>
   </div>

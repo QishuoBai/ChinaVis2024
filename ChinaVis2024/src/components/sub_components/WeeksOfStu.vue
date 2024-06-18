@@ -1,21 +1,23 @@
 <template>
-    <div class="d-flex flex-row">
-        <div style="width:30%" class="border-thin"></div>
-        <div ref="Rose_container" style="height: 100px; width: 1000px;"></div>
+    <div ref="Title_Container" class="ml-3 position-sticky top-0"></div>
+    <div class="w-100 d-flex flex-row">
+        <div class="position-sticky left-0 bg-grey-lighten-2">
+            <v-icon class="ma-2" icon="mdi-account"></v-icon>
+        </div>
+        <div ref="Rose_container"></div>
     </div>
-    
 </template>
 
 <script>
 import * as d3 from 'd3';
-import { knowledgeOrder, colorOfRose } from '@/utils/asset';
+import { knowledgeOrder, colorOfRose, WeekTable } from '@/utils/asset';
 export default {
     data(){
         return{
             layout:{
                 "HEIGHT":100,
-                "WeeksNum":20
-            }
+                "WeeksNum":20,
+            },
         }
     },
     mounted(){
@@ -50,7 +52,7 @@ export default {
                         .attr('x', index*this.layout.HEIGHT)
                         .attr('y', 0)
                         .attr('width', this.layout.HEIGHT)
-                        .attr('height', this.layout.HEIGHT-2)
+                        .attr('height', this.layout.HEIGHT)
                         .style('fill', '#eee')
                 }
                 rose_group.append('g').attr('class','rose')
@@ -62,9 +64,6 @@ export default {
                     .attr("d", arc)
                     .attr("fill", (d,i) => colorOfRose(i))
                     .attr("opacity", 0.8);
-
-                
-                
             });
 
         }
