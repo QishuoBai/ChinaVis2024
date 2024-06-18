@@ -12,7 +12,7 @@
                 <Portrait />
             </div>
         </div>
-        <div class="flex-grow-1 d-flex flex-column ma-1 ml-0">
+        <div class="flex-grow-1 d-flex flex-column ma-1 ml-0" style="width: 0px;">
             <div style="height: 60%;" class="mb-1 bg-white rounded">
                 <WeekView />
             </div>
