@@ -1,12 +1,13 @@
 <template>
-  <div class="h-100 w-100">
-    <div class="text-h6">Week View</div>
-    <div class="container">
-      <WeeksOfStu
-        v-for="id in stu_IDs"
-        :key="id"
-        :dataobj="findObjectByID(id)"
-      />
+  <div class="h-100 w-100 pa-2 d-flex flex-column">
+    <div class="text-body-1 font-weight-bold">Scatter View</div>
+    <v-divider></v-divider>
+    <div class="w-100" style="overflow: scroll;">
+      <!-- <WeeksOfStu
+          v-for="id in stu_IDs"
+          :key="id"
+          :dataobj="findObjectByID(id)"
+        /> -->
     </div>
   </div>
 </template>
@@ -37,11 +38,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-.container {
-  height: 90%;
-  /* 这里注意修改！ */
-  width: 1200px;
-  overflow: scroll scroll;
-}
-</style>
+<style scoped></style>

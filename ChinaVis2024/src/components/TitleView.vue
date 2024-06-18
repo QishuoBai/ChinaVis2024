@@ -1,6 +1,7 @@
 <template>
-  <div class="h-100 w-100">
-    <div class="text-h6">Title View</div>
+  <div class="h-100 w-100 pa-2 d-flex flex-column">
+    <div class="text-body-1 font-weight-bold">Scatter View</div>
+    <v-divider></v-divider>
     <!-- <a-dropdown>
         <a class="ant-dropdown-link" @click.prevent>
             select knowledge
@@ -20,7 +21,7 @@
         </a-menu>
         </template>
     </a-dropdown> -->
-    <div style="width: 100%; height: 60%; display: flex">
+    <div class="flex-grow-1 d-flex flex-row">
       <div class="TitlesContainer"></div>
       <div class="TitlePerformance"></div>
     </div>
