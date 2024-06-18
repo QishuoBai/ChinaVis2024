@@ -7,7 +7,7 @@
       <div class="h-50 d-flex flex-row">
         <div id="ClusterView" style="width:30%" class="border-thin"></div>
         <div id="SubmitView" class="flex-grow-1 border-sm">
-          <Submit />
+          <WeekView />
         </div>
       </div>
       <div class="h-50 d-flex flex-row">
