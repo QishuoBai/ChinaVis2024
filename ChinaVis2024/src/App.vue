@@ -14,9 +14,11 @@
         </div>
         <div class="flex-grow-1 d-flex ma-1 ml-0 flex-column">
             <div style="height: 60%;" class="mb-1 bg-white rounded">
-                <Submit />
+                <WeekView />
             </div>
-            <div class="flex-grow-1 bg-white rounded"></div>
+            <div class="flex-grow-1 bg-white rounded">
+                <TitleView />
+            </div>
         </div>
     </div>
   </div>
@@ -24,9 +26,10 @@
 
 <script setup>
 //
-import Submit from './components/Submit.vue';
+import WeekView from './components/WeekView.vue';
 import Scatter from './components/Scatter.vue';
 import Portrait from './components/Portrait.vue';
+import TitleView from './components/TitleView.vue';
 </script>
 <style scoped>
 

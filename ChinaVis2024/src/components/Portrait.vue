@@ -21,15 +21,15 @@
     },
     methods: {
         init_portrait() {
-        const svg_height = this.$refs.svg_container.clientHeight;
-        const svg_width = this.$refs.svg_container.clientWidth;
+        // const svg_height = this.$refs.svg_container.clientHeight;
+        // const svg_width = this.$refs.svg_container.clientWidth;
   
-        const svg = d3
-          .select(this.$refs.svg_container)
-          .append("svg")
-          .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
-          .attr("width", svg_width)
-          .attr("height", svg_height);
+        // const svg = d3
+        //   .select(this.$refs.svg_container)
+        //   .append("svg")
+        //   .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
+        //   .attr("width", svg_width)
+        //   .attr("height", svg_height);
         
       },
     },
