@@ -94,20 +94,20 @@ export default {
         .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
         .attr("width", svg_width)
         .attr("height", svg_height);
-      const xScale = d3
-        .scaleLinear()
-        .domain([
-          d3.min(stu_features, (d) => d.tsne_x),
-          d3.max(stu_features, (d) => d.tsne_x),
-        ])
-        .range([0, svg_width]);
-      const yScale = d3
-        .scaleLinear()
-        .domain([
-          d3.min(stu_features, (d) => d.tsne_y),
-          d3.max(stu_features, (d) => d.tsne_y),
-        ])
-        .range([0, svg_height]);
+    //   const xScale = d3
+    //     .scaleLinear()
+    //     .domain([
+    //       d3.min(stu_features, (d) => d.tsne_x),
+    //       d3.max(stu_features, (d) => d.tsne_x),
+    //     ])
+    //     .range([0, svg_width]);
+    //   const yScale = d3
+    //     .scaleLinear()
+    //     .domain([
+    //       d3.min(stu_features, (d) => d.tsne_y),
+    //       d3.max(stu_features, (d) => d.tsne_y),
+    //     ])
+    //     .range([0, svg_height]);
       // 绘制坐标轴
     //   svg
     //     .append("g")
@@ -120,18 +120,18 @@ export default {
     //     .attr("stroke", "black")
     //     .attr("stroke-width", 1);
       // 绘制点
-      svg
-        .append("g")
-        .selectAll("circle")
-        .data(stu_features)
-        .enter()
-        .append("circle")
-        .attr("cx", (d) => xScale(d.tsne_x))
-        .attr("cy", (d) => yScale(d.tsne_y))
-        .attr("r", 4)
-        .attr("fill", (d) => cluster_color[d.cluster[this.cluster_num - 1]])
-        .attr("cursor", "pointer")
-        .attr("opacity", 0.8);
+    //   svg
+    //     .append("g")
+    //     .selectAll("circle")
+    //     .data(stu_features)
+    //     .enter()
+    //     .append("circle")
+    //     .attr("cx", (d) => xScale(d.tsne_x))
+    //     .attr("cy", (d) => yScale(d.tsne_y))
+    //     .attr("r", 4)
+    //     .attr("fill", (d) => cluster_color[d.cluster[this.cluster_num - 1]])
+    //     .attr("cursor", "pointer")
+    //     .attr("opacity", 0.8);
     },
     clickGroup(index){
         this.selected.group = (this.selected.group == index?0:index);

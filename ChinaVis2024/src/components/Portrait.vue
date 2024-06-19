@@ -122,7 +122,7 @@ export default {
         .append("g")
         .attr("id", "g-content")
         .attr("transform", `translate(${centerX} ${centerY})`);
-      this.draw_group(2);
+    //   this.draw_group(2);
     },
     draw_group(gid) {
       const svg_height = this.svg_height;
