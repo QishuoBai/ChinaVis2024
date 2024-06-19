@@ -34,7 +34,7 @@
                 <div class="w-50 h-100 mb-1 ml-1 bg-white rounded"><WeekView /></div>
             </div>
         </div>
-        <div class="flex-grow-1 bg-white rounded ma-1 ml-0"></div>
+        <div class="flex-grow-1 bg-white rounded ma-1 ml-0"><Student /></div>
     </div>
   </div>
 </template>

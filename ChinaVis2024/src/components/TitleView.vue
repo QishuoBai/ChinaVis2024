@@ -1,20 +1,19 @@
 <template>
   <div class="h-100 w-100 pa-2 d-flex flex-column">
-    <div class="text-body-1 font-weight-bold">Scatter View</div>
+    <div class="text-body-1 font-weight-bold">Title View</div>
     <v-divider></v-divider>
-    <div class="flex-grow-1 d-flex flex-colomn">
-      <div class="TitlesContainer"></div>
+    <div class="flex-grow-1" style="overflow: scroll; height: 0px;">
+      <div class="TitlesContainer w-100"></div>
     </div>
   </div>
 </template>
 <script>
 import * as d3 from "d3";
-import { DownOutlined } from "@ant-design/icons-vue";
 import TitleViewData from "../data/TitleViewData.json";
 export default {
   data() {
     return {
-      SelectedKnowledge: "b3C9s",
+      SelectedKnowledge: "m3D1v",
       dataobj: null,
       layout: {
         Width: 0,
@@ -95,7 +94,6 @@ export default {
         .attr("r", (d) => R_InScale(d.t_mean_score))
         .attr("fill", "red");
     },
-    // 绘制题目表现
     drawPerformance(svg, layout) {
       const mem_scale = d3
         .scaleLinear()
@@ -201,35 +199,7 @@ export default {
             .attr('fill', color[i])
         })
       });
-      // const g = svg
-      //   .append("g").attr("name","bars")
-      //   .attr("transform", (d) => `translate(${layout.Height}, -25)`)
-      //   .selectAll("g")
-      //   .data(this.dataobj.titles)
-      //   .enter()
-      // let base = 0
-      // g.append('g')
-      //   .selectAll('rect')
-      //   .data(d => d.t_score_distribute.b)
-      //   .enter()
-      //   .append('rect')
-      //   .attr('x', (d,i) => {
-      //     base += d
-      //     return size_scale(base)
-      //   })
-      //   .attr('y', (d, i) => i * layout.Height + layout.Height / 2 + i*layout.barWidth)
-      //   .attr('width', (d, i) => size_scale(d))
-      //   .attr('height', layout.barWidth - 1)
-      //   .attr('fill', (d,i) => color[i])
-      
     }
   },
 };
 </script>
-<style scoped>
-.TitlesContainer {
-  width: 50%;
-  height: 100%;
-  background-color: rgb(247, 202, 202);
-}
-</style>
