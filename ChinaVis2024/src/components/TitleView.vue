@@ -10,19 +10,19 @@
 <script>
 import * as d3 from "d3";
 import { DownOutlined } from "@ant-design/icons-vue";
-import TitleViewData from '../data/TitleViewData.json'
+import TitleViewData from "../data/TitleViewData.json";
 export default {
   data() {
     return {
-      SelectedKnowledge:'g7R2j',
+      SelectedKnowledge: "b3C9s",
       dataobj: null,
       layout: {
-        Width: 100,
-        Height: 0,
+        Width: 0,
+        Height: 100,
         RO: 30,
         RI: 15,
         LineLen: 200,
-        barWidth: 5,
+        barWidth: 10,
       },
     };
   },
@@ -30,23 +30,24 @@ export default {
     const svg = this.init();
     this.drawTitles(svg, this.layout);
     this.drawPerformance(svg, this.layout);
+    this.drawScore(svg, this.layout);
   },
   methods: {
     init() {
-      const obj = TitleViewData.find((item) => item.knowledge === this.SelectedKnowledge);
-      // 找到其中的各取值范围辅助映射
-      this.dataobj = obj
-      this.layout.Height = d3.select(".TitlesContainer").node().clientHeight;
+      this.dataobj = TitleViewData.find(
+        (item) => item.knowledge === this.SelectedKnowledge
+      );
+      this.layout.Width = d3.select(".TitlesContainer").node().clientWidth;
       const svg = d3
         .select(".TitlesContainer")
         .append("svg")
-        .attr("width", this.dataobj.titleNum * this.layout.Width)
-        .attr("height", this.layout.Height)
+        .attr("width", this.layout.Width)
+        .attr("height", this.dataobj.titleNum * this.layout.Height)
         .attr("viewBox", [
           0,
           0,
-          this.dataobj.titleNum * this.layout.Width,
-          this.layout.Height,
+          this.layout.Width,
+          this.layout.Height * this.dataobj.titleNum,
         ]);
       return svg;
     },
@@ -65,10 +66,10 @@ export default {
         .data(this.dataobj.titles)
         .enter()
         .append("rect")
-        .attr("x", (d, i) => i * layout.Width)
-        .attr("y", 0)
-        .attr("width", layout.Width - 2)
-        .attr("height", layout.Height)
+        .attr("x", 0)
+        .attr("y", (d, i) => i * layout.Height)
+        .attr("width", layout.Width)
+        .attr("height", layout.Height - 2)
         // .attr("stroke", "black")
         .attr("fill", "#ddd");
       svg
@@ -78,8 +79,8 @@ export default {
         .enter()
         .append("circle")
         .attr("opacity", 0.5)
-        .attr("cx", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("cy", layout.Width / 2)
+        .attr("cx", layout.Height / 2)
+        .attr("cy", (d, i) => i * layout.Height + layout.Height / 2)
         .attr("r", (d) => R_OutScale(d.t_mean_sbmnum))
         .attr("fill", "red");
       svg
@@ -89,88 +90,139 @@ export default {
         .enter()
         .append("circle")
         .attr("opacity", 0.5)
-        .attr("cx", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("cy", layout.Width / 2)
+        .attr("cx", layout.Height / 2)
+        .attr("cy", (d, i) => i * layout.Height + layout.Height / 2)
         .attr("r", (d) => R_InScale(d.t_mean_score))
         .attr("fill", "red");
     },
     // 绘制题目表现
     drawPerformance(svg, layout) {
-      // 注意mem表现的比例尺待改
       const mem_scale = d3
         .scaleLinear()
         .domain([128, 65536])
-        .range([layout.LineLen, 0]);
+        .range([0,layout.LineLen]);
       const tc_scale = d3
         .scaleLinear()
         .domain([0, 400])
-        .range([layout.LineLen, 0]);
+        .range([0, layout.LineLen]);
 
       // 绘制memory表现箱型图
       const g1 = svg
         .append("g")
-        .attr(
-          "transform",
-          (d) => `translate(${-layout.barWidth}, ${layout.Width})`
-        )
+        .attr("transform", (d) => `translate(${layout.Height}, 0)`)
         .selectAll("line")
-        .data(this.dataobj.pfm_mem)
-        .enter();
-
+        .data(this.dataobj.titles)
+        .enter()
       g1.append("line")
-        .attr("x1", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("y1", 0)
-        .attr("x2", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("y2", layout.LineLen)
-        .style("stroke", "black")
+        .attr("x1", 0)
+        .attr("y1", (d, i) => i * layout.Height + layout.Height / 2)
+        .attr("x2", layout.LineLen)
+        .attr("y2", (d, i) => i * layout.Height + layout.Height / 2)
+        .style("stroke", "grey")
+        .style("stroke-width", 0.5);
+      g1.append("line")
+        .attr("x1", (d, i) => mem_scale(d.t_mean_pfm_mem))
+        .attr("y1", (d, i) => i * layout.Height + layout.Height / 2 - layout.barWidth )
+        .attr("x2", (d, i) => mem_scale(d.t_mean_pfm_mem))
+        .attr("y2", (d, i) => i * layout.Height + layout.Height / 2 + layout.barWidth)
+        .style("stroke", "red")
         .style("stroke-width", 1);
       g1.append("rect")
         .attr(
-          "x",
-          (d, i) => i * layout.Width + layout.Width / 2 - layout.barWidth / 2
+          "y",
+          (d, i) => i * layout.Height + layout.Height / 2 - layout.barWidth / 2
         )
-        .attr("y", (d, i) => mem_scale(d.t_max_pfm_mem))
-        .attr("width", layout.barWidth)
+        .attr("x", (d, i) => mem_scale(d.t_min_pfm_mem))
+        .attr("height", layout.barWidth)
         .attr(
-          "height",
-          (d, i) => mem_scale(d.t_min_pfm_mem) - mem_scale(d.t_max_pfm_mem)
+          "width",
+          (d, i) => mem_scale(d.t_max_pfm_mem) - mem_scale(d.t_min_pfm_mem)
         )
         // .attr("stroke", "black")
         .attr("fill", "#222");
-
 
       // 绘制timeconsume表现箱型图
       const g2 = svg
         .append("g")
-        .attr(
-          "transform",
-          (d) => `translate(${layout.barWidth}, ${layout.Width})`
-        )
+        .attr("transform", (d) => `translate(${layout.Height}, ${15})`)
         .selectAll("line")
-        .data(this.dataobj.pfm_tc)
-        .enter();
-
+        .data(this.dataobj.titles)
+        .enter()
       g2.append("line")
-        .attr("x1", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("y1", 0)
-        .attr("x2", (d, i) => i * layout.Width + layout.Width / 2)
-        .attr("y2", layout.LineLen)
-        .style("stroke", "black")
+        .attr("x1", 0)
+        .attr("y1", (d, i) => i * layout.Height + layout.Height / 2 )
+        .attr("x2", layout.LineLen)
+        .attr("y2", (d, i) => i * layout.Height + layout.Height / 2)
+        .style("stroke", "grey")
+        .style("stroke-width", 0.5);
+      g2.append("line")
+        .attr("x1", (d, i) => tc_scale(d.t_mean_pfm_tc))
+        .attr("y1", (d, i) => i * layout.Height + layout.Height / 2 - layout.barWidth )
+        .attr("x2", (d, i) => tc_scale(d.t_mean_pfm_tc))
+        .attr("y2", (d, i) => i * layout.Height + layout.Height / 2 + layout.barWidth)
+        .style("stroke", "red")
         .style("stroke-width", 1);
       g2.append("rect")
         .attr(
-          "x",
-          (d, i) => i * layout.Width + layout.Width / 2 - layout.barWidth / 2
+          "y",
+          (d, i) => i * layout.Height + layout.Height / 2 - layout.barWidth / 2
         )
-        .attr("y", (d, i) => tc_scale(d.t_max_pfm_tc))
-        .attr("width", layout.barWidth)
+        .attr("x", (d, i) => tc_scale(d.t_min_pfm_tc))
+        .attr("height", layout.barWidth)
         .attr(
-          "height",
-          (d, i) => tc_scale(d.t_min_pfm_tc) - tc_scale(d.t_max_pfm_tc)
+          "width",
+          (d, i) => tc_scale(d.t_max_pfm_tc) - tc_scale(d.t_min_pfm_tc)
         )
         // .attr("stroke", "black")
         .attr("fill", "#222");
     },
+    drawScore(svg, layout) {
+      const size_scale = d3
+        .scaleLinear()
+        .domain([0, 1])
+        .range([0, layout.LineLen]);
+      const color = d3.schemeAccent;
+      const data = this.dataobj.titles;
+      data.forEach((obj,index) => {
+        const arr = obj.t_score_distribute.b;
+        const bars = svg.append('g').attr('name',"bars")
+          .attr("transform", (d,i) => `translate(${layout.Height}, ${index * layout.Height + layout.Height/2 - 20})`)
+        let base = 0
+        arr.forEach((item, i) => {
+          bars.append('rect')
+            .attr('x', (d,i) => {
+              const res = size_scale(base)
+              base += item
+              return res
+            })
+            .attr('y', 0)
+            .attr('width', (d, i) => size_scale(item))
+            .attr('height', layout.barWidth)
+            .attr('fill', color[i])
+        })
+      });
+      // const g = svg
+      //   .append("g").attr("name","bars")
+      //   .attr("transform", (d) => `translate(${layout.Height}, -25)`)
+      //   .selectAll("g")
+      //   .data(this.dataobj.titles)
+      //   .enter()
+      // let base = 0
+      // g.append('g')
+      //   .selectAll('rect')
+      //   .data(d => d.t_score_distribute.b)
+      //   .enter()
+      //   .append('rect')
+      //   .attr('x', (d,i) => {
+      //     base += d
+      //     return size_scale(base)
+      //   })
+      //   .attr('y', (d, i) => i * layout.Height + layout.Height / 2 + i*layout.barWidth)
+      //   .attr('width', (d, i) => size_scale(d))
+      //   .attr('height', layout.barWidth - 1)
+      //   .attr('fill', (d,i) => color[i])
+      
+    }
   },
 };
 </script>
@@ -178,6 +230,6 @@ export default {
 .TitlesContainer {
   width: 50%;
   height: 100%;
-  background-color: rgb(237, 237, 237);
+  background-color: rgb(247, 202, 202);
 }
 </style>
