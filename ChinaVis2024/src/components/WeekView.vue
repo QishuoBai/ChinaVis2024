@@ -17,7 +17,7 @@
 </template>
 <script>
 import WeeksOfStu from "@/components/sub_components/WeeksOfStu.vue";
-import WeekRosedata from "../../public/data/WeekRosedata.json";
+import WeekRosedata from "../data/WeekRosedata.json";
 import * as d3 from "d3";
 export default {
   components: {

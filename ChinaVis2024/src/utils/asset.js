@@ -45,7 +45,6 @@ const knowledgeOrder = {
     ]
 }
 const colorOfRose = (num) => {
-    let color = 'blue';
     switch (num) {
         case 0: case 1:
             return '#448aff';
@@ -66,6 +65,17 @@ const colorOfRose = (num) => {
         default: return 'red'
     }
 }
+const colorOfTitle = (num) => {
+    switch (num) {
+        case 0:
+            return 'red';
+        case 1: 
+            return 'blue';
+        case 2: 
+            return 'yellow';
+        default: return 'black'
+    }
+}
 const WeekTable = [
     "2023/8/31-2023/9/3","2023/9/4-2023/9/10","2023/9/11-2023/9/17","2023/9/18-2023/9/24","2023/9/25-2023/10/1",
     "2023/10/2-2023/10/8","2023/10/9-2023/10/15","2023/10/16-2023/10/22","2023/10/23-2023/10/29","2023/10/30-2023/11/5",
@@ -75,6 +85,6 @@ const WeekTable = [
 ]
 export {
     knowledgeOrder,
-    colorOfRose,
+    colorOfRose,colorOfTitle,
     WeekTable
 }
