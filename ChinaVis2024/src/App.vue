@@ -132,34 +132,7 @@
           <div class="w-50 h-100 mb-1 ml-1 bg-white rounded"><WeekView /></div>
         </div>
       </div>
-      <div class="flex-grow-1 bg-white rounded ma-1 ml-0"></div>
-        <!-- <div class="w-25 d-flex flex-column ma-1">
-            <div class="h-50 w-100 mb-1 bg-white rounded">
-                <Scatter />
-            </div>
-            <div class="h-50 w-100 bg-white rounded">
-                <Portrait />
-            </div>
-        </div>
-        <div class="flex-grow-1 d-flex flex-column ma-1 ml-0" style="width: 0px;">
-            <div style="height: 60%;" class="mb-1 bg-white rounded">
-                <WeekView />
-            </div>
-            <div style="height: 40%;" class="bg-white rounded">
-                <TitleView />
-            </div>
-        </div> -->
-        <div style="width: 80%;" class="d-flex flex-column ma-1">
-            <div class="w-100 d-flex flex-row mb-0" style="height: 40%;">
-                <div class="w-25 bg-white rounded"><Scatter /></div>
-                <div class="flex-grow-1 ml-1 bg-white rounded"><Portrait /></div>
-            </div>
-            <div class="flex-grow-1 d-flex flex-row mt-1">
-                <div class="w-50 h-100 mb-1 bg-white rounded"><TitleView /></div>
-                <div class="w-50 h-100 mb-1 ml-1 bg-white rounded"><WeekView /></div>
-            </div>
-        </div>
-        <div class="flex-grow-1 bg-white rounded ma-1 ml-0"><Student /></div>
+      <div class="flex-grow-1 bg-white rounded ma-1 ml-0"><Student /></div>
     </div>
   </div>
 </template>
@@ -173,7 +146,7 @@ import TitleView from "./components/TitleView.vue";
 import data_stu_features from "@/data/stu_features.json";
 import * as d3 from "d3";
 import { postRequest, getRequest } from "@/utils/tool.js";
-import { clusterStore } from '@/store'
+import { clusterStore } from "@/store";
 
 export default {
   components: {
@@ -323,11 +296,11 @@ export default {
         .attr("d", area_generator)
         .attr("fill", `url(#gradient-${index})`);
     },
-    cluster(){
-        postRequest('/cluster', this.cluster_config).then((res) => {
-          clusterStore().result = res.data;
-        });
-    }
+    cluster() {
+      postRequest("/cluster", this.cluster_config).then((res) => {
+        clusterStore().result = res.data;
+      });
+    },
   },
   watch: {
     dialog(newVal, oldVal) {
