@@ -2,11 +2,28 @@
   <div class="h-100 w-100 pa-2 d-flex flex-column">
     <div class="text-body-1 font-weight-bold">Portrait View</div>
     <v-divider></v-divider>
-    <div class="flex-grow-1 mt-2" style="height: 0px">
-      <div
-        ref="svg_container"
-        class="h-100 w-100 border rounded overflow-hidden"
-      ></div>
+    <div class="flex-grow-1 mt-2 d-flex flex-row" style="height: 0px">
+      <div style="width: 85%" class="d-flex flex-row rounded">
+        <div
+          v-for="index in cluster_num"
+          :key="index"
+          ref="svg_container"
+          :class="
+            'h-100 flex-shrink-0 rounded mx-1' +
+            (selected_cluster == index || selected_cluster == 0
+              ? ' elevation-2'
+              : '')
+          "
+          :style="{
+            border:
+              (selected_cluster == index || selected_cluster == 0
+                ? '1'
+                : '0') + 'px solid black'
+          }"
+          style="width: 33%"
+        ></div>
+      </div>
+      <div class="flex-grow-1"></div>
     </div>
   </div>
 </template>
@@ -15,6 +32,7 @@
 import stu_features from "@/data/stu_features.json";
 import * as d3 from "d3";
 import { knowledgeOrder } from "@/utils/asset";
+import { clusterStore } from "@/store";
 
 const knowledges = [
   "b3C9s",
@@ -30,14 +48,14 @@ const knowledges = [
 const sub_knowledges = knowledgeOrder.array;
 const knowledges_sub_nums = knowledgeOrder.group.map((d) => d.length);
 const features = [
-  "st_rank",
-  "st_pfm_mem",
-  "st_exploreNum",
-  "st_time_l",
-  "st_time_mean",
-  "st_time_f",
-  "st_testNum",
-  "st_pfm_tc",
+  "score_bonus",
+  "rank_bonus",
+  "enthusiasm_bonus",
+  "explore_bonus",
+  "tc_bonus",
+  "mem_bonus",
+  "_error_type_penalty",
+  "_test_num_penalty",
 ];
 
 export default {
@@ -47,40 +65,36 @@ export default {
     };
   },
   computed: {
-    selected_group() {
-      return 1;
+    selected_cluster() {
+      return clusterStore().selected;
     },
-    select_stu_IDs() {
-      return [1, 2];
+    cluster_result() {
+      return clusterStore().result;
     },
-    svg_height() {
-      return this.$refs.svg_container.clientHeight;
-    },
-    svg_width() {
-      return this.$refs.svg_container.clientWidth;
-    },
-    r() {
-      return Math.min(this.svg_height, this.svg_width) * 0.25;
-    },
-    bar_height() {
-      return 60;
+    cluster_color() {
+      return clusterStore().colors;
     },
   },
-  mounted() {
-    this.init_portrait();
+  watch: {
+    cluster_result() {
+      [1, 2, 3].forEach((cid) => {
+        this.draw_cluster(cid);
+      });
+    },
   },
+  mounted() {},
   methods: {
-    init_portrait() {
-      const svg_height = this.svg_height;
-      const svg_width = this.svg_width;
-      const centerX = this.svg_width / 2;
-      const centerY = this.svg_height / 2;
+    draw_cluster(cid) {
+      const svg_height = this.$refs.svg_container[cid - 1].clientHeight;
+      const svg_width = this.$refs.svg_container[cid - 1].clientWidth;
+      const centerX = svg_width / 2;
+      const centerY = svg_height / 2;
 
-      const r = this.r;
-      const bar_height = this.bar_height;
-
-      const svg = d3
-        .select(this.$refs.svg_container)
+      const r = Math.min(svg_height, svg_width) * 0.25;
+      const bar_height = 60;
+      const container = d3.select(this.$refs.svg_container[cid - 1]);
+      container.html("");
+      const svg = container
         .append("svg")
         .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
         .attr("width", svg_width)
@@ -103,9 +117,8 @@ export default {
         .attr("stroke", "lightgray")
         .attr("stroke-dasharray", "5,5")
         .attr("stroke-width", 1);
-      const angleStep = Math.PI / 4;
       for (let i = 0; i < 8; i++) {
-        const angle = i * angleStep;
+        const angle = i * (Math.PI / 4);
         const x2 = centerX + r * Math.cos(angle);
         const y2 = centerY + r * Math.sin(angle);
         svg
@@ -118,34 +131,15 @@ export default {
           .attr("stroke-dasharray", "5,5")
           .attr("stroke-width", 1);
       }
-      svg
-        .append("g")
-        .attr("id", "g-content")
-        .attr("transform", `translate(${centerX} ${centerY})`);
-    //   this.draw_group(2);
-    },
-    draw_group(gid) {
-      const svg_height = this.svg_height;
-      const svg_width = this.svg_width;
-      const centerX = this.svg_width / 2;
-      const centerY = this.svg_height / 2;
+      let cur_cluster_stuids = this.cluster_result
+        .filter((d) => d.cluster == cid - 1)
+        .map((d) => d.student_ID);
+      console.log(cur_cluster_stuids);
 
-      const r = this.r;
-      const bar_height = this.bar_height;
-
-      let filtered_students;
       const cluster_num = this.cluster_num;
-
-      if (gid == 0) {
-        filtered_students = stu_features;
-      } else {
-        filtered_students = stu_features.filter(
-          (d) => d.cluster[cluster_num - 1] == gid - 1
-        );
-      }
-      // 清除内容
-      const g = d3.select(this.$refs.svg_container).select("#g-content");
-      g.html("");
+      let filtered_students = stu_features.filter((d) =>
+        cur_cluster_stuids.includes(d.student_ID)
+      );
       //   画外圈
       let knowledges_score = [];
       knowledges.forEach((k) => {
@@ -159,7 +153,7 @@ export default {
           d3.mean(filtered_students, (d) => d.sub_knowledge_score[k])
         );
       });
-      console.log(knowledges_score);
+      console.log(sub_knowledges_scores);
       const bar_height_scale = d3
         .scaleLinear()
         .domain([0, 1])
@@ -167,7 +161,9 @@ export default {
       let startAngle = 0;
       let sub_index = 0;
 
-      let g_outer = g.append("g");
+      let g_outer = g
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY})`);
       knowledges.forEach((d, i) => {
         const sub_num = knowledges_sub_nums[i];
         const angleStep = Math.PI / 4 / sub_num;
@@ -187,8 +183,8 @@ export default {
                 .endAngle(endAngle)
                 .padAngle(0.01)
             )
-            .attr("fill", "grey")
-            .attr("opacity", 0.1);
+            .attr("fill", this.cluster_color[cid - 1])
+            .attr("opacity", 0.8);
           startAngle = endAngle;
           sub_index++;
         }
@@ -196,19 +192,14 @@ export default {
       //   画内圈
       let features_score = [];
       features.forEach((f) => {
-        features_score.push(d3.mean(filtered_students, (d) => d[f]));
+        features_score.push(d3.mean(filtered_students, (d) => d.features[f]));
       });
       let features_xy = [];
-      const inner_01_scale = d3.scaleLinear().domain([0, 1]).range([0, r]);
-      const inner_time_scale = d3.scaleLinear().domain([0, 10]).range([0, r]);
+      const inner_scale = d3.scaleLinear().domain([0, 1]).range([0, r]);
       const angleStep = Math.PI / 4;
       features_score.forEach((d, i) => {
         let r_length;
-        if (i == 2 || i == 6) {
-          r_length = inner_time_scale(d);
-        } else {
-          r_length = inner_01_scale(d);
-        }
+        r_length = inner_scale(d);
         let x = r_length * Math.cos(angleStep * i - Math.PI / 2);
         let y = r_length * Math.sin(angleStep * i - Math.PI / 2);
         features_xy.push({ x: x, y: y });
@@ -219,14 +210,16 @@ export default {
         .x((d) => d.x)
         .y((d) => d.y)
         .curve(d3.curveLinearClosed);
-      let g_inner = g.append("g");
+      let g_inner = g
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY})`);
       g_inner
         .append("path")
         .datum(features_xy)
         .attr("d", radarLine)
         .attr("fill", "none")
         .attr("fill-opacity", 0.5)
-        .attr("stroke", "black")
+        .attr("stroke", this.cluster_color[cid - 1])
         .attr("stroke-width", 2);
     },
   },
