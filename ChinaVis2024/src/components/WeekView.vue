@@ -1,6 +1,6 @@
 <template>
   <div ref="container" class="h-100 w-100 pa-2 d-flex flex-column">
-    <div class="text-body-1 font-weight-bold">Scatter View</div>
+    <div class="text-body-1 font-weight-bold">Week View</div>
     <v-divider></v-divider>
     <div
       ref="sub_container"

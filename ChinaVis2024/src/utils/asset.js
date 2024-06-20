@@ -76,6 +76,7 @@ const colorOfTitle = (num) => {
         default: return 'black'
     }
 }
+const colorOfStack = ["#48cae4","#00b4d8","#0096c7","#0077b6"]
 const WeekTable = [
     "2023/8/31-2023/9/3","2023/9/4-2023/9/10","2023/9/11-2023/9/17","2023/9/18-2023/9/24","2023/9/25-2023/10/1",
     "2023/10/2-2023/10/8","2023/10/9-2023/10/15","2023/10/16-2023/10/22","2023/10/23-2023/10/29","2023/10/30-2023/11/5",
@@ -85,6 +86,6 @@ const WeekTable = [
 ]
 export {
     knowledgeOrder,
-    colorOfRose,colorOfTitle,
+    colorOfRose,colorOfTitle,colorOfStack,
     WeekTable
 }
