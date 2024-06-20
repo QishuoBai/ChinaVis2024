@@ -8,11 +8,13 @@
           v-for="index in cluster_num"
           :key="index"
           :variant="
-            selected.group == index || selected.group == 0 ? 'outlined' : 'text'
+            selected.cluster == index || selected.cluster == 0
+              ? 'outlined'
+              : 'text'
           "
           size="small"
           class="text-body-2 font-weight-regular mx-2"
-          @click="clickGroup(index)"
+          @click="clickCluster(index)"
         >
           <template v-slot:prepend>
             <div
@@ -24,7 +26,7 @@
               class="rounded-circle"
             ></div>
           </template>
-          Group{{ index }}</v-btn
+          Cluster{{ index }}</v-btn
         >
       </div>
       <div ref="svg_container" class="w-100 flex-grow-1 border rounded"></div>
@@ -40,20 +42,9 @@ import { clusterStore } from "@/store";
 export default {
   data() {
     return {
-      value: "Class1",
-      classes: Array.from({ length: 15 }, (_, i) => `Class${i + 1}`),
-      majors: ["J23517", "J40192", "J57489", "J78901", "J87654"],
-      genders: ["male", "female"],
-      age_min: 18,
-      age_max: 24,
-      student_IDs: stu_features.map((item) => item.student_ID),
       cluster_num: 3,
-      cluster_color: d3.schemeCategory10,
       selected: {
-        class: "",
-        major: "",
-        gender: "",
-        group: 0, // 0 标识全选
+        cluster: 0, // 0 标识全选
         stu_IDs: [],
       },
     };
@@ -62,6 +53,9 @@ export default {
     cluster_result() {
       return clusterStore().result;
     },
+    cluster_color(){
+        return clusterStore().colors;
+    }
   },
   watch: {
     cluster_result() {
@@ -71,6 +65,7 @@ export default {
   mounted() {},
   methods: {
     draw_scatter() {
+        console.log(d3.select(this.$refs.svg_container))
       const svg_height = this.$refs.svg_container.clientHeight;
       const svg_width = this.$refs.svg_container.clientWidth;
       const cluster_color = this.cluster_color;
@@ -82,7 +77,7 @@ export default {
         .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
         .attr("width", svg_width)
         .attr("height", svg_height);
-        const padding = 10;
+      const padding = 10;
       const xScale = d3
         .scaleLinear()
         .domain([d3.min(data, (d) => d.x), d3.max(data, (d) => d.x)])
@@ -104,8 +99,9 @@ export default {
         .attr("cursor", "pointer")
         .attr("opacity", 0.8);
     },
-    clickGroup(index) {
-      this.selected.group = this.selected.group == index ? 0 : index;
+    clickCluster(index) {
+      this.selected.cluster = this.selected.cluster == index ? 0 : index;
+      clusterStore().selected = this.selected.cluster;
       console.log(this.cluster_result);
     },
   },
