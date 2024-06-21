@@ -405,18 +405,19 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
+        .attr('class' , d => `knowledge-legend knowledge-legend-${d}`)
         .attr(
           "d",
           d3
             .arc()
             .innerRadius(r1)
             .outerRadius(r2)
-            .startAngle((d, i) => i * (Math.PI / 4) - Math.PI / 2)
-            .endAngle((d, i) => (i + 1) * (Math.PI / 4) - Math.PI / 2)
+            .startAngle((d, i) => i * (Math.PI / 4))
+            .endAngle((d, i) => (i + 1) * (Math.PI / 4))
             .padAngle(0.01)
         )
         .attr("fill", (d, i) => this.cluster_color[0])
-        .attr("opacity", 0.8);
+        .attr("opacity", d => (clusterStore().selected_knowledge == '' || clusterStore().selected_knowledge == d)?0.8:0.25);
       svg
         .append("g")
         .attr("transform", `translate(${centerX} ${centerY})`)
@@ -512,6 +513,7 @@ export default {
     },
     highlightSelectedKnowledge() {
       d3.selectAll(".knowledge-highlight").attr("visibility", "hidden");
+      d3.selectAll(".knowledge-legend").attr("opacity", d => (clusterStore().selected_knowledge == '' || clusterStore().selected_knowledge == d)?0.8:0.25);
       if (clusterStore().selected_knowledge != "") {
         d3.selectAll(
           `.knowledge-${clusterStore().selected_knowledge}-highlight`

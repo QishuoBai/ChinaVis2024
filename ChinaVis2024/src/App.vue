@@ -121,7 +121,7 @@
         </div>
       </div>
     </div>
-    <div class="flex-grow-1 d-flex flex-row w-100">
+    <div class="flex-grow-1 d-flex flex-row w-100" style="height:0px">
       <div style="width: 80%" class="d-flex flex-column ma-1">
         <div class="w-100 d-flex flex-row mb-0" style="height: 40%">
           <div class="w-25 bg-white rounded"><Scatter /></div>
