@@ -4,7 +4,7 @@
       id="header"
       class="border-b-thin pa-1 px-3 bg-grey-darken-4 d-flex flex-row justify-space-between align-center"
     >
-      <div class="text-h6">时序多变量教育数据可视分析系统</div>
+      <div class="text-h6">LearnClusterVis</div>
       <div class="d-flex flex-row align-center text-body-2">
         <div class="d-flex flex-row align-end mt-1">
           <div>Class:</div>

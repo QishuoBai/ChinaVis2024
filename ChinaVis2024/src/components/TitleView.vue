@@ -2,7 +2,7 @@
   <div class="h-100 w-100 pa-2 d-flex flex-column">
     <div class="text-body-1 font-weight-bold">Title View</div>
     <v-divider></v-divider>
-    <div class="flex-grow-1" style="overflow: scroll; height: 0px">
+    <div class="flex-grow-1 overflow-scroll overflow-x-auto hide-scrollbar" style="height: 0px">
       <div class="TitlesContainer w-100 h-100">
         <v-list lines="one">
           <v-list-item v-for="tid in this.TitleList" :key="tid">
