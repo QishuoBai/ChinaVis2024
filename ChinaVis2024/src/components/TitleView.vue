@@ -19,12 +19,12 @@
 import * as d3 from "d3";
 import TitleViewData from "../data/TitleViewData.json";
 import RowOfTitle from "@/components/sub_components/RowOfTitle.vue";
+import { clusterStore } from "@/store";
 
 export default {
   data() {
     return {
       // 默认绘制数据
-      SelectedKnowledge: "g7R2j",
       dataobj: {
         knowledge: "g7R2j",
         sub_knowledges: ["g7R2j_e0v1yls8", "g7R2j_j1g8gd3v"],
@@ -10354,6 +10354,11 @@ export default {
       },
     };
   },
+  computed: {
+    SelectedKnowledge(){
+        return clusterStore().selected_knowledge;
+    }
+  },
   watch: {
     SelectedKnowledge() {
       this.dataobj = TitleViewData.find(
@@ -10456,5 +10461,8 @@ export default {
         .attr("fill", "#222");
     },
   },
+  mounted(){
+    
+  }
 };
 </script>

@@ -5,10 +5,11 @@ export const clusterStore = defineStore('cluster', {
     state: () => {
         return {
             result: [],
-            selected_cluster: 0,
+            selected_cluster: 0, // 0 是全选
             colors: d3.schemeCategory10,
             selected_students: [],
-            selected_knowledge: "",
+            selected_knowledge: "", // ""是全选
+            features4cluster: [],
         }
     },
 })

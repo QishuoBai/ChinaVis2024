@@ -102,16 +102,22 @@ export default {
     cluster_color() {
       return clusterStore().colors;
     },
+    store_selected_students() {
+      return clusterStore().selected_students;
+    },
   },
   watch: {
     cluster_result() {
       this.draw_scatter();
     },
+    store_selected_students() {
+      this.selected.stu_IDs = clusterStore().selected_students;
+      this.hightlightSelected();
+    },
   },
   mounted() {},
   methods: {
     draw_scatter() {
-      console.log(d3.select(this.$refs.svg_container));
       const svg_height = this.$refs.svg_container.clientHeight;
       const svg_width = this.$refs.svg_container.clientWidth;
       const cluster_color = this.cluster_color;
@@ -155,8 +161,8 @@ export default {
           } else {
             this.selected.stu_IDs.push(d.student_ID);
           }
-          this.hightlightSelected()
-          clusterStore().selected_students = this.selected.stu_IDs;
+          this.hightlightSelected();
+          clusterStore().selected_students = [...this.selected.stu_IDs];
         });
         // 画有stoke的散点，以保证高亮时的部分点不被遮挡
       svg
@@ -184,8 +190,8 @@ export default {
           } else {
             this.selected.stu_IDs.push(d.student_ID);
           }
-          this.hightlightSelected()
-          clusterStore().selected_students = this.selected.stu_IDs;
+          this.hightlightSelected();
+          clusterStore().selected_students = [...this.selected.stu_IDs];
         });
     },
     clickCluster(index) {
@@ -204,7 +210,7 @@ export default {
         if (!this.selected.stu_IDs.includes(this.search_reault)) {
           this.selected.stu_IDs.push(this.search_reault);
           this.hightlightSelected();
-          clusterStore().selected_students = this.selected.stu_IDs;
+          clusterStore().selected_students = [...this.selected.stu_IDs];
         }
       }
       this.search_reault = null;

@@ -297,6 +297,8 @@ export default {
         .attr("fill", `url(#gradient-${index})`);
     },
     cluster() {
+        clusterStore().selected_students = [];
+        clusterStore().features4cluster = [...this.cluster_config.features.filter((item) => item.use4cluster).map((item) => item.name)]
       postRequest("/cluster", this.cluster_config).then((res) => {
         clusterStore().result = res.data;
       });
@@ -304,7 +306,6 @@ export default {
   },
   watch: {
     dialog(newVal, oldVal) {
-      console.log(newVal, oldVal);
       if (newVal) {
         this.$nextTick(() => {
           this.cluster_config.features.forEach((item, index) => {
