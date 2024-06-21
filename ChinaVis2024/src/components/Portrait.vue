@@ -1,9 +1,9 @@
 <template>
-  <div class="h-100 w-100 pa-2 d-flex flex-column">
+  <div class="h-100 w-100 pa-2 d-flex flex-column" style="width: 0px;">
     <div class="text-body-1 font-weight-bold">Portrait View</div>
     <v-divider></v-divider>
     <div class="flex-grow-1 mt-2 d-flex flex-row" style="height: 0px">
-      <div style="width: 85%" class="d-flex flex-row rounded">
+      <div style="width: 80%" class="d-flex flex-row rounded">
         <div
           v-for="index in cluster_num"
           :key="index"
@@ -16,14 +16,16 @@
           "
           :style="{
             border:
-              (selected_cluster == index || selected_cluster == 0
-                ? '1'
-                : '0') + 'px solid black'
+              (selected_cluster == index || selected_cluster == 0 ? '1' : '0') +
+              'px solid black',
           }"
           style="width: 33%"
         ></div>
       </div>
-      <div class="flex-grow-1"></div>
+      <div style="margin-left: 70px;width: 12%">
+        <div ref="legend-1" class="h-50 w-100"></div>
+        <div ref="legend-2" class="h-50 w-100"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +59,16 @@ const features = [
   "_error_type_penalty",
   "_test_num_penalty",
 ];
+const features_label = [
+    "Score",
+    "Rank",
+    "Enthusiasm",
+    "Explore",
+    "TC Bonus",
+    "Mem Bonus",
+    "Error-Free Bonus",
+    "Test-Free Bonus",
+    ];
 
 export default {
   data() {
@@ -66,7 +78,7 @@ export default {
   },
   computed: {
     selected_cluster() {
-      return clusterStore().selected;
+      return clusterStore().selected_cluster;
     },
     cluster_result() {
       return clusterStore().result;
@@ -82,7 +94,9 @@ export default {
       });
     },
   },
-  mounted() {},
+  mounted() {
+    this.draw_legend();
+  },
   methods: {
     draw_cluster(cid) {
       const svg_height = this.$refs.svg_container[cid - 1].clientHeight;
@@ -117,10 +131,18 @@ export default {
         .attr("stroke", "lightgray")
         .attr("stroke-dasharray", "5,5")
         .attr("stroke-width", 1);
+      g.append("circle")
+        .attr("cx", centerX)
+        .attr("cy", centerY)
+        .attr("r", r/2)
+        .style("fill", "none")
+        .attr("stroke", "lightgray")
+        .attr("stroke-dasharray", "5,5")
+        .attr("stroke-width", 1);
       for (let i = 0; i < 8; i++) {
         const angle = i * (Math.PI / 4);
-        const x2 = centerX + r * Math.cos(angle);
-        const y2 = centerY + r * Math.sin(angle);
+        const x2 = centerX + (r + bar_height) * Math.cos(angle);
+        const y2 = centerY + (r + bar_height) * Math.sin(angle);
         svg
           .append("line")
           .attr("x1", centerX)
@@ -134,7 +156,7 @@ export default {
       let cur_cluster_stuids = this.cluster_result
         .filter((d) => d.cluster == cid - 1)
         .map((d) => d.student_ID);
-      console.log(cur_cluster_stuids);
+    //   console.log(cur_cluster_stuids);
 
       const cluster_num = this.cluster_num;
       let filtered_students = stu_features.filter((d) =>
@@ -153,7 +175,7 @@ export default {
           d3.mean(filtered_students, (d) => d.sub_knowledge_score[k])
         );
       });
-      console.log(sub_knowledges_scores);
+    //   console.log(sub_knowledges_scores);
       const bar_height_scale = d3
         .scaleLinear()
         .domain([0, 1])
@@ -204,7 +226,7 @@ export default {
         let y = r_length * Math.sin(angleStep * i - Math.PI / 2);
         features_xy.push({ x: x, y: y });
       });
-      console.log(features_score);
+    //   console.log(features_score);
       const radarLine = d3
         .line()
         .x((d) => d.x)
@@ -221,6 +243,89 @@ export default {
         .attr("fill-opacity", 0.5)
         .attr("stroke", this.cluster_color[cid - 1])
         .attr("stroke-width", 2);
+    },
+    draw_legend() {
+      const height = this.$refs["legend-1"].clientHeight;
+      const width = this.$refs["legend-1"].clientWidth;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      // legend1
+      let r1 = 35;
+      let r2 = 45;
+      let svg = d3.select(this.$refs["legend-1"])
+        .append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("width", width)
+        .attr("height", height).attr('overflow', 'visible');
+
+        svg
+            .append("g").attr('transform', `translate(${centerX} ${centerY})`)
+            .selectAll("path").data(knowledges).join("path")
+            .attr(
+              "d",
+              d3
+                .arc()
+                .innerRadius(r1)
+                .outerRadius(
+                  r2
+                )
+                .startAngle((d, i) => i * (Math.PI / 4) - Math.PI / 2)
+                .endAngle((d, i) => (i + 1) * (Math.PI / 4) - Math.PI / 2)
+                .padAngle(0.01)
+            )
+            .attr("fill", (d,i)=> this.cluster_color[0])
+            .attr("opacity", 0.8);
+        svg
+            .append("g").attr('transform', `translate(${centerX} ${centerY})`)
+            .selectAll("text").data(knowledges).join("text")
+            .text(d=>d)
+            .attr('text-anchor', (d,i)=> i<4?'start':'end')
+            .attr('alignment-baseline', 'middle')
+            .attr('x', (d, i) => r2 * Math.cos(i * (Math.PI / 4) + Math.PI / 8- Math.PI / 2) + (i<4?5:-5) )
+            .attr('y', (d, i) => r2 * Math.sin(i * (Math.PI / 4) + Math.PI / 8- Math.PI / 2))
+            .attr('font-size', 10);
+        // legend2
+        svg = d3.select(this.$refs["legend-2"])
+        .append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("width", width)
+        .attr("height", height).attr('overflow', 'visible');
+        svg.append('circle')
+        .attr('cx', centerX)
+        .attr('cy', centerY)
+        .attr('r', r1)
+        .attr('fill', 'none')
+        .attr('stroke', 'lightgray')
+        .attr('stroke-dasharray', '5,5');
+        svg.append("circle")
+        .attr("cx", centerX)
+        .attr("cy", centerY)
+        .attr("r", r1/2)
+        .style("fill", "none")
+        .attr("stroke", "lightgray")
+        .attr("stroke-dasharray", "5,5")
+      
+        svg
+        .append('g').selectAll("line").data(features).join("line")
+          .attr("x1", centerX)
+          .attr("y1", centerY)
+          .attr("x2", (d,i)=> centerX + r1 * Math.cos(i * (Math.PI / 4) - Math.PI / 2))
+          .attr("y2", (d,i)=> centerY + r1 * Math.sin(i * (Math.PI / 4) - Math.PI / 2))
+          .attr("stroke", "lightgray")
+          .attr("stroke-dasharray", "5,5")
+          .attr("stroke-width", 1);
+          svg.append('g').selectAll("text").data(features_label).join("text")
+            .text(d=>d)
+            .attr('x', (d,i)=> centerX + (r1+2) * Math.cos(i * (Math.PI / 4) - Math.PI / 2))
+            .attr('y', (d,i)=> centerY + (r1+2) * Math.sin(i * (Math.PI / 4) - Math.PI / 2))
+            .attr('font-size', 10)
+            .attr('text-anchor', (d,i)=> {
+                if(i==0 || i==4) return 'middle';
+                if(i<4) return 'start';
+                return 'end';
+            })
+            .attr('alignment-baseline', 'middle');
+
     },
   },
 };

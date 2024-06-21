@@ -1,6 +1,50 @@
 <template>
   <div class="h-100 w-100 pa-2 d-flex flex-column">
-    <div class="text-body-1 font-weight-bold">Scatter View</div>
+    <div
+      class="text-body-1 font-weight-bold d-flex flex-row justify-space-between"
+    >
+      <div>Scatter View</div>
+      <div>
+        <v-dialog v-model="search_dialog" max-width="600">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-icon
+              class="mx-2"
+              icon="mdi-magnify"
+              size="small"
+              v-bind="activatorProps"
+            ></v-icon>
+          </template>
+
+          <v-card>
+            <v-card-title class="text-body-1">
+              <v-icon icon="mdi-magnify" size="small"></v-icon>
+              Search Student
+            </v-card-title>
+            <v-card-text>
+              <v-autocomplete
+                v-model="search_reault"
+                label="Student ID"
+                :items="cluster_result.map((d) => d.student_ID)"
+                variant="outlined"
+              ></v-autocomplete
+            ></v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                text="Confirm"
+                variant="text"
+                @click="confirmSearch()"
+              ></v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-icon
+          @click="clearSelectedID()"
+          icon="mdi-delete-outline"
+          size="small"
+        ></v-icon>
+      </div>
+    </div>
     <v-divider></v-divider>
     <div class="flex-grow-1 d-flex flex-column align-center px-2">
       <div class="d-flex flex-row align-center justify-center my-2">
@@ -47,15 +91,17 @@ export default {
         cluster: 0, // 0 标识全选
         stu_IDs: [],
       },
+      search_dialog: false,
+      search_reault: null,
     };
   },
   computed: {
     cluster_result() {
       return clusterStore().result;
     },
-    cluster_color(){
-        return clusterStore().colors;
-    }
+    cluster_color() {
+      return clusterStore().colors;
+    },
   },
   watch: {
     cluster_result() {
@@ -65,7 +111,7 @@ export default {
   mounted() {},
   methods: {
     draw_scatter() {
-        console.log(d3.select(this.$refs.svg_container))
+      console.log(d3.select(this.$refs.svg_container));
       const svg_height = this.$refs.svg_container.clientHeight;
       const svg_width = this.$refs.svg_container.clientWidth;
       const cluster_color = this.cluster_color;
@@ -86,8 +132,10 @@ export default {
         .scaleLinear()
         .domain([d3.min(data, (d) => d.y), d3.max(data, (d) => d.y)])
         .range([padding, svg_height - padding]);
+      // 画散点
       svg
         .append("g")
+        .attr("class", "g-scatter")
         .selectAll("circle")
         .data(data)
         .enter()
@@ -97,12 +145,78 @@ export default {
         .attr("r", 4)
         .attr("fill", (d) => cluster_color[d.cluster])
         .attr("cursor", "pointer")
-        .attr("opacity", 0.8);
+        .style("fill-opacity", 0.6)
+        .attr("stroke", "none")
+        .on("click", (e, d) => {
+          if (this.selected.stu_IDs.includes(d.student_ID)) {
+            this.selected.stu_IDs = this.selected.stu_IDs.filter(
+              (id) => id != d.student_ID
+            );
+          } else {
+            this.selected.stu_IDs.push(d.student_ID);
+          }
+          this.hightlightSelected()
+          clusterStore().selected_students = this.selected.stu_IDs;
+        });
+        // 画有stoke的散点，以保证高亮时的部分点不被遮挡
+      svg
+        .append("g")
+        .attr("class", "g-stroke-scatter")
+        .selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => xScale(d.x))
+        .attr("cy", (d) => yScale(d.y))
+        .attr("r", 4)
+        .attr("fill", (d) => cluster_color[d.cluster])
+        .attr("cursor", "pointer")
+        .style("fill-opacity", 0.6)
+        .attr("stroke", "black")
+        .attr("visibility", (d) =>
+          this.selected.stu_IDs.includes(d.student_ID) ? "visible" : "hidden"
+        )
+        .on("click", (e, d) => {
+          if (this.selected.stu_IDs.includes(d.student_ID)) {
+            this.selected.stu_IDs = this.selected.stu_IDs.filter(
+              (id) => id != d.student_ID
+            );
+          } else {
+            this.selected.stu_IDs.push(d.student_ID);
+          }
+          this.hightlightSelected()
+          clusterStore().selected_students = this.selected.stu_IDs;
+        });
     },
     clickCluster(index) {
       this.selected.cluster = this.selected.cluster == index ? 0 : index;
-      clusterStore().selected = this.selected.cluster;
-      console.log(this.cluster_result);
+      clusterStore().selected_cluster = this.selected.cluster;
+      //   console.log(this.cluster_result);
+    },
+    clearSelectedID() {
+      this.selected.stu_IDs = [];
+      this.hightlightSelected();
+      clusterStore().selected_students = [];
+    },
+    confirmSearch() {
+      console.log(this.search_reault);
+      if (this.search_reault != null) {
+        if (!this.selected.stu_IDs.includes(this.search_reault)) {
+          this.selected.stu_IDs.push(this.search_reault);
+          this.hightlightSelected();
+          clusterStore().selected_students = this.selected.stu_IDs;
+        }
+      }
+      this.search_reault = null;
+      this.search_dialog = false;
+    },
+    hightlightSelected() {
+      d3.select(this.$refs.svg_container)
+        .select(".g-stroke-scatter")
+        .selectAll("circle")
+        .attr("visibility", (d) =>
+          this.selected.stu_IDs.includes(d.student_ID) ? "visible" : "hidden"
+        );
     },
   },
 };

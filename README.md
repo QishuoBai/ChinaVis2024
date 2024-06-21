@@ -8,6 +8,16 @@
 - backend: 后端
 - ChinaVis2024: 前端
 
+### 后端
+
+请先打开后端
+
+```bash
+cd backend
+cd flask
+python app.py
+```
+
 ### 前端
 
 ```bash

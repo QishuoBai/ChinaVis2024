@@ -5,8 +5,10 @@ export const clusterStore = defineStore('cluster', {
     state: () => {
         return {
             result: [],
-            selected: 0,
+            selected_cluster: 0,
             colors: d3.schemeCategory10,
+            selected_students: [],
+            selected_knowledge: "",
         }
     },
 })

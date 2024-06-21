@@ -169,25 +169,25 @@ export default {
         features: [
           {
             name: "score_bonus",
-            label: "Title Score",
+            label: "Score",
             range: [0, 1],
             use4cluster: true,
           },
           {
             name: "rank_bonus",
-            label: "Rank Score",
+            label: "Rank",
             range: [0, 1],
             use4cluster: true,
           },
           {
             name: "enthusiasm_bonus",
-            label: "Enthusiasm Bonus",
+            label: "Enthusiasm",
             range: [0, 1],
             use4cluster: true,
           },
           {
             name: "explore_bonus",
-            label: "Explore Bonus",
+            label: "Explore",
             range: [0, 1],
             use4cluster: true,
           },
@@ -205,13 +205,13 @@ export default {
           },
           {
             name: "_error_type_penalty",
-            label: "ErrorType-Free Bonus",
+            label: "Error-Free Bonus",
             range: [0, 1],
             use4cluster: true,
           },
           {
             name: "_test_num_penalty",
-            label: "TestNum-Free Bonus",
+            label: "Test-Free Bonus",
             range: [0, 1],
             use4cluster: true,
           },
