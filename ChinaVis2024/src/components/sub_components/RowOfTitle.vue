@@ -1,6 +1,6 @@
 <template>
-  <p class="ma-1">{{ dataobj.t_id }}</p>
-  <div style="height: 100px" :id="'Title' + dataobj.t_id"></div>
+  <p class="ma-1">{{ dataobj.title_ID }}</p>
+  <div style="height: 100px" :id="'Title' + dataobj.title_ID"></div>
 </template>
 <script>
 import * as d3 from "d3";
@@ -16,13 +16,15 @@ export default {
       barWidth: 20,
       h_LENGTH: 300,
       h_HEIGHT: 50,
+      bandWidth: 200,
+      bandHeight: 10,
     };
   },
   props: {
     dataobj: Object,
   },
   mounted() {
-    const Tid = this.dataobj.t_id;
+    const Tid = this.dataobj.title_ID;
     this.Width = d3.select("#Title" + Tid).node().clientWidth;
     this.Height = d3.select("#Title" + Tid).node().clientHeight;
 
@@ -33,11 +35,14 @@ export default {
       .attr("height", this.Height)
       .attr("viewBox", [0, 0, this.Width, this.Height]);
     this.drawCircle(svg, this.dataobj);
-    this.drawScore(svg, this.dataobj.t_score_distribute);
+    this.drawScore(svg, this.dataobj);
     this.drawSubmit(svg, this.dataobj);
+    this.drawMem(svg, this.dataobj);
+    const scaleL = d3.scaleLog().domain([1, 66000]).range([1, 10]).base(2);
   },
   methods: {
     drawCircle(svg, data) {
+      const circles = svg.append("g").attr("name", "title circles");
       const R_OutScale = d3
         .scaleLinear()
         .domain([0, 10])
@@ -46,7 +51,6 @@ export default {
         .scaleLinear()
         .domain([10, 50])
         .range([this.RI / 3, this.RI]);
-      const circles = svg.append("g");
       circles
         .append("circle")
         .attr("opacity", 0.5)
@@ -63,66 +67,55 @@ export default {
         .attr("fill", "red");
     },
     drawScore(svg, data) {
+      const g = svg
+        .append("g")
+        .attr("name", "score_distribute_bars")
+        .attr("transform", `translate(${this.Height}, ${70})`);
       const size_scale = d3
         .scaleLinear()
         .domain([0, 1])
         .range([0, this.LineLen]);
-      const color = d3.schemeAccent;
-      const arr = data.b;
+      const color = d3.scaleOrdinal(d3.schemeAccent);
+      const sdObj = data.t_score_distribute;
+      const SubNum = data.t_ValidSubmitNum;
       let base = 0;
-      const g = svg
-        .append("g")
-        .attr("name", "bars")
-        .attr("transform", (d, i) => `translate(${this.Height}, ${70})`);
-      data.b.forEach((item, i) => {
+      Object.keys(sdObj).forEach((key) => {
         g.append("rect")
-          .attr("x", () => {
-            const res = size_scale(base);
-            base += item;
-            return res;
-          })
+          .attr("x", size_scale(base))
           .attr("y", 0)
-          .attr("width", (d, i) => size_scale(item))
+          .attr("width", size_scale(sdObj[key] / SubNum))
           .attr("height", this.barWidth)
-          .attr("fill", colorOfStack[i])
-          .attr("score", data.a[i])
-        g.append('text')
-          .text(i)
+          .attr("fill", color(key))
+          .attr("score", key);
+        g.append("text")
+          .text(key)
           .attr("x", () => size_scale(base))
           .attr("y", this.barWidth)
           .attr("fill", "black")
           .attr("font-size", 15)
           .attr("font-weight", "bold")
           .attr("font-family", "sans-serif")
-          .attr("text-anchor", "end")
-      }
-    );
+          .attr("text-anchor", "start");
+        base += sdObj[key] / SubNum;
+      });
     },
     drawSubmit(svg, data) {
-      // const arr = [];
-      // data.SubmitArr.forEach((element) => {
-      //   return arr.push(new Date(element * 1000).toLocaleString());
-      // });
+      const g = svg
+        .append("g")
+        .attr("name", "Submits Time Line")
+        .attr("transform", `translate(${350}, ${0})`);
       const bins = d3
         .bin()
         .thresholds(40)
-        .value((d) => d)(data.SubmitArr);
-      //   console.log(bins);
-
+        .value((d) => d)(data.t_SubmitArr);
       const x = d3
         .scaleLinear()
-        // .domain([bins[0].x0, bins[bins.length - 1].x1])
-        .domain([1693471583.0, 1706158726.0])
+        .domain([1693471583.0, 1706158726.0]) //时间最大最小
         .range([0, this.h_LENGTH]);
-      // const x2 = d3
-      //   .scaleTime()
-      //   .domain(d3.extent(arr, (d) => d))
-      //   .range([0, this.h_LENGTH]);
       const y = d3
         .scaleLinear()
         .domain([0, d3.max(bins, (d) => d.length)])
         .range([this.h_HEIGHT, 0]);
-      const g = svg.append("g").attr("transform", `translate(${350}, ${0})`);
       g.attr("fill", "steelblue")
         .selectAll()
         .data(bins)
@@ -131,7 +124,6 @@ export default {
         .attr("width", (d) => x(d.x1) - x(d.x0) - 1)
         .attr("y", (d) => y(d.length))
         .attr("height", (d) => y(0) - y(d.length));
-
       g.append("g")
         .attr("transform", `translate(${0}, ${this.h_HEIGHT})`)
         .call(
@@ -139,7 +131,7 @@ export default {
             .axisBottom(x)
             .ticks(this.h_LENGTH / 80)
             .tickSizeOuter(0)
-            .tickFormat((d) => new Date(d * 1000).toLocaleString())
+            .tickFormat((d) => new Date(d * 1000).toLocaleString()) //修改标签为正常时间格式
         )
         .call((g) =>
           g
@@ -150,6 +142,42 @@ export default {
             .attr("text-anchor", "start")
             .text("Submit Time Line →")
         );
+    },
+    drawMem(svg, data) {
+      const g = svg
+        .append("g")
+        .attr("name", "Mem points")
+        .attr("transform", `translate(${this.Height}, ${30})`);
+
+      const block = d3
+        .scaleQuantize()
+        .domain([0, 65536])
+        .range([0, 1, 2, 3, 4, 5]);
+
+      const scaleL = d3.scaleLog().domain([1, 100000]).range([1, 5]);
+      const scale3 = (mem) =>{
+        if(mem<=200) {return 0}
+        else if(mem<=300){return 1}
+        else if(mem<=400){return 2}
+        else if(mem<=500){return 3}
+        else if(mem<=1000){return 4}
+        else if(mem<=5000){return 5}
+        else if(mem<=10000){return 6}
+        else if(mem<=7000){return 7}
+      }
+      g.selectAll()
+        .data(data.t_memArr)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => {
+          const index = Math.floor(scale3(d));
+          const delt = Math.random() * (this.bandWidth / 8);
+          return index * (this.bandWidth / 8) + delt;
+        })
+        .attr("cy", () => (Math.random() * 2 - 1) * this.bandHeight)
+        .attr("r", 1)
+        .style("fill", "blue")
+        .style("opacity", 0.2);
     },
   },
 };

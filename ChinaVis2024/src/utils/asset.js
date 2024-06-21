@@ -44,6 +44,81 @@ const knowledgeOrder = {
     { sa: 6.021385919380437, ea: 6.283185307179586 },
   ],
 };
+const knowledge2Titles = [
+  {
+    knowledge: "b3C9s",
+    titleArr: [
+      "Question_bumGRTJ0c8p4v5D6eHZa",
+      "Question_hZ5wXofebmTlzKB1jNcP",
+      "Question_FNg8X9v5zcbB1tQrxHR3",
+    ],
+  },
+  {
+    knowledge: "g7R2j",
+    titleArr: [
+      "Question_oCjnFLbIs4Uxwek9rBpu",
+      "Question_5fgqjSBwTPG7KUV3it6O",
+      "Question_X3wF8QlTyi4mZkDp9Kae",
+      "Question_YWXHr4G6Cl7bEm9iF2kQ",
+      "Question_xqlJkmRaP0otZcX4fK3W",
+    ],
+  },
+  { knowledge: "k4W1c", titleArr: ["Question_lU2wvHSZq7m43xiVroBc"] },
+  {
+    knowledge: "m3D1v",
+    titleArr: [
+      "Question_h7pXNg80nJbw1C4kAPRm",
+      "Question_6RQj2gF3OeK5AmDvThUV",
+      "Question_4nHcauCQ0Y6Pm8DgKlLo",
+      "Question_TmKaGvfNoXYq4FZ2JrBu",
+      "Question_NixCn84GdK2tySa5rB1V",
+      "Question_n2BTxIGw1Mc3Zo6RLdUe",
+      "Question_7NJzCXUPcvQF4Mkfh9Wr",
+      "Question_ZTbD7mxr2OUp8Fz6iNjy",
+      "Question_Jr4Wz5jLqmN01KUwHa7g",
+      "Question_QRm48lXxzdP7Tn1WgNOf",
+      "Question_pVKXjZn0BkSwYcsa7C31",
+      "Question_oCjnFLbIs4Uxwek9rBpu",
+    ],
+  },
+  {
+    knowledge: "r8S3g",
+    titleArr: [
+      "Question_VgKw8PjY1FR6cm2QI9XW",
+      "Question_q7OpB2zCMmW9wS8uNt3H",
+      "Question_fZrP3FJ4ebUogW9V7taS",
+      "Question_BW0ItEaymH3TkD6S15JF",
+      "Question_rvB9mVE6Kbd8jAY4NwPx",
+    ],
+  },
+  { knowledge: "s8Y2f", titleArr: ["Question_x2Fy7rZ3SwYl9jMQkpOD"] },
+  {
+    knowledge: "t5V9e",
+    titleArr: [
+      "Question_3oPyUzDmQtcMfLpGZ0jW",
+      "Question_3MwAFlmNO8EKrpY5zjUd",
+      "Question_x2L7AqbMuTjCwPFy6vNr",
+      "Question_tgOjrpZLw4RdVzQx85h6",
+      "Question_s6VmP1G4UbEQWRYHK9Fd",
+    ],
+  },
+  {
+    knowledge: "y9W5d",
+    titleArr: [
+      "Question_QRm48lXxzdP7Tn1WgNOf",
+      "Question_pVKXjZn0BkSwYcsa7C31",
+      "Question_Ej5mBw9rsOUKkFycGvz2",
+      "Question_lU2wvHSZq7m43xiVroBc",
+      "Question_Mh4CZIsrEfxkP1wXtOYV",
+      "Question_62XbhBvJ8NUSnApgDL94",
+      "Question_x2Fy7rZ3SwYl9jMQkpOD",
+      "Question_UXqN1F7G3Sbldz02vZne",
+      "Question_Ou3f2Wt9BqExm5DpN7Zk",
+      "Question_Az73sM0rHfWVKuc4X2kL",
+      "Question_EhVPdmlB31M8WKGqL0wc",
+    ],
+  },
+];
 const colorOfRose = (num) => {
   switch (num) {
     case 0:
@@ -87,21 +162,21 @@ const colorOfTitle = (num) => {
 };
 const colorOfStack = ["#48cae4", "#00b4d8", "#0096c7", "#0077b6"];
 const subknowledgeCount = [
-  { name: "b3C9s_j0v1yls8", num: 1},
-  { name: "b3C9s_l4z6od7y", num: 2},
-  { name: "g7R2j_e0v1yls8", num: 4},
-  { name: "g7R2j_j1g8gd3v", num: 1},
-  { name: "k4W1c_h5r6nux7", num: 1},
-  { name: "m3D1v_r1d7fr3l", num: 9},
-  { name: "m3D1v_t0v5ts9h", num: 1},
-  { name: "m3D1v_v3d9is1x", num: 2},
-  { name: "r8S3g_l0p5viby", num: 2},
-  { name: "r8S3g_n0m9rsw4", num: 4},
-  { name: "s8Y2f_v4x8by9j", num: 1},
-  { name: "t5V9e_e1k6cixp", num: 5},
-  { name: "y9W5d_c0w4mj5h", num: 8},
-  { name: "y9W5d_e2j7p95s", num: 1},
-  { name: "y9W5d_p8g6dgtv", num: 2},
+  { name: "b3C9s_j0v1yls8", num: 1 },
+  { name: "b3C9s_l4z6od7y", num: 2 },
+  { name: "g7R2j_e0v1yls8", num: 4 },
+  { name: "g7R2j_j1g8gd3v", num: 1 },
+  { name: "k4W1c_h5r6nux7", num: 1 },
+  { name: "m3D1v_r1d7fr3l", num: 9 },
+  { name: "m3D1v_t0v5ts9h", num: 1 },
+  { name: "m3D1v_v3d9is1x", num: 2 },
+  { name: "r8S3g_l0p5viby", num: 2 },
+  { name: "r8S3g_n0m9rsw4", num: 4 },
+  { name: "s8Y2f_v4x8by9j", num: 1 },
+  { name: "t5V9e_e1k6cixp", num: 5 },
+  { name: "y9W5d_c0w4mj5h", num: 8 },
+  { name: "y9W5d_e2j7p95s", num: 1 },
+  { name: "y9W5d_p8g6dgtv", num: 2 },
 ];
 const knowledgeCount = [
   { name: "b3C9s", num: 3 },
@@ -116,6 +191,7 @@ const knowledgeCount = [
 
 export {
   knowledgeOrder,
+  knowledge2Titles,
   colorOfRose,
   colorOfTitle,
   colorOfStack,
