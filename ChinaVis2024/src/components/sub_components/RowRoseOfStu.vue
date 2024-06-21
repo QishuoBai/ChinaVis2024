@@ -4,7 +4,7 @@
 </template>
 <script>
 import * as d3 from "d3";
-import { knowledgeOrder, colorOfRose, WeekTable } from "@/utils/asset";
+import { knowledgeOrder, colorOfRose } from "@/utils/asset";
 export default {
   data() {
     return {
