@@ -5,7 +5,7 @@
       class="border-b-thin pa-1 px-3 bg-grey-darken-4 d-flex flex-row justify-space-between align-center"
     >
       <div class="text-h6">时序多变量教育数据可视分析系统</div>
-      <div class="d-flex flex-row align-center">
+      <div class="d-flex flex-row align-center text-body-2">
         <div class="d-flex flex-row align-end mt-1">
           <div>Class:</div>
           <div
@@ -121,7 +121,7 @@
         </div>
       </div>
     </div>
-    <div class="flex-grow-1 d-flex flex-row w-100" style="height:0px">
+    <div class="flex-grow-1 d-flex flex-row w-100" style="height: 0px">
       <div style="width: 80%" class="d-flex flex-column ma-1">
         <div class="w-100 d-flex flex-row mb-0" style="height: 40%">
           <div class="w-25 bg-white rounded"><Scatter /></div>
@@ -297,8 +297,13 @@ export default {
         .attr("fill", `url(#gradient-${index})`);
     },
     cluster() {
-        clusterStore().selected_students = [];
-        clusterStore().features4cluster = [...this.cluster_config.features.filter((item) => item.use4cluster).map((item) => item.name)]
+      clusterStore().selected_students = [];
+      clusterStore().selected_knowledge= "";
+      clusterStore().features4cluster = [
+        ...this.cluster_config.features
+          .filter((item) => item.use4cluster)
+          .map((item) => item.name),
+      ];
       postRequest("/cluster", this.cluster_config).then((res) => {
         clusterStore().result = res.data;
       });
@@ -320,4 +325,16 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style>
+* {
+  font-family: "Roboto";
+}
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+</style>
