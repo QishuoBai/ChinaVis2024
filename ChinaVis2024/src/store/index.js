@@ -10,6 +10,11 @@ export const clusterStore = defineStore('cluster', {
             selected_students: [],
             selected_knowledge: "", // ""是全选
             features4cluster: [],
+            hoverTitleInfo: {
+                title:"default titleid",
+                score:0.5,
+                sbmnum:0.5
+            },
         }
     },
 })
