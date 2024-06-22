@@ -4,9 +4,10 @@
     <v-divider></v-divider>
     <div
       ref="container"
-      class="w-100 h-100 pa-2 overflow-scroll overflow-x-auto hide-scrollbar"
+      class="w-100 h-100 pa-2 overflow-scroll overflow-x-auto hide-scrollbar" v-if="selected_students.length > 0"
     >
       <v-card
+        
         v-for="(item, index) in selected_students_features"
         :key="index"
         class="my-4 elevation-3"
@@ -41,6 +42,7 @@
         </v-card-text>
       </v-card>
     </div>
+    <div v-else class="flex-grow-1 d-flex flex-row align-center justify-center text-body-2 text-grey">Please select some students to start</div>
   </div>
 </template>
 
@@ -108,8 +110,8 @@ export default {
         const container_ref = this.$refs.svg_container[index];
         const height = container_ref.clientHeight;
         const student_id = item.student_ID;
-        // const cluster = clusterStore().result.filter(d => d.student_ID == student_id)[0].cluster;
-        const cluster = 0;
+        const cluster = clusterStore().result.filter(d => d.student_ID == student_id)[0].cluster;
+        // const cluster = 0;
         const bg_color = clusterStore().colors[cluster] + "3e";
         const line_color = clusterStore().colors[cluster];
         d3

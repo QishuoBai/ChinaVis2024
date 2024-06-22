@@ -3,27 +3,51 @@
     <div class="text-body-1 font-weight-bold">Week View</div>
     <v-divider></v-divider>
 
-    <div class="flex-grow-1" style="overflow: scroll; height: 0px">
-      <div style="width: 2300px">
+    <div
+      class="flex-grow-1 position-relative"
+      style="overflow: scroll; height: 0px; z-index: 0"
+    >
+      <div class="h-100 position-absolute top-0 bg-white d-flex flex-row"  style="width: 2300px; z-index: 0;">
+        <div :style="{ width: `${layout.user_icon_width}px` }"></div>
+        <div v-for="wk in 22"
+        :key="wk" :style="{ width: `${layout.item_width}px` ,backgroundColor: wk % 2 != 0 ? gray_color : '',}"></div>
+
+      </div>
+      <div style="width: 2300px;z-index: 1;">
         <div class="StudentsContainer h-100">
-          <v-toolbar style="margin-left: 80px" color="#eee" class="position-relative top-0">
-            <span v-for="wk in 22" style="width: 100px">
-              <v-chip label color="blue" class="mx-2">Week{{ wk }}</v-chip>
-            </span>
-          </v-toolbar>
-          <v-list lines="one">
-            <v-list-item
-              v-for="id in this.stu_IDs"
-              :key="id"
-              prepend-icon="mdi-account-circle"
+          <div class="d-flex flex-row position-sticky top-0" style="z-index: 99">
+            <div :style="{ width: `${layout.user_icon_width}px` }"></div>
+            <div
+              v-for="wk in 22"
+              :key="wk"
+              :style="{
+                width: `${layout.item_width}px`,
+              }"
+              class="d-flex flex-row justify-center align-center pt-1 font-weight-medium text-body-2"
             >
-              <v-card variant="outlined">
-                <div style="height: 100px">
-                  <RowRoseOfStu :dataobj="findObjectByID(id)"></RowRoseOfStu>
-                </div>
-              </v-card>
-            </v-list-item>
-          </v-list>
+              Week{{ wk }}
+            </div>
+          </div>
+          <div
+            v-for="id in this.selected_students"
+            :key="id"
+            class="d-flex flex-row"
+          >
+            <div
+              :style="{ width: `${layout.user_icon_width}px` }"
+              class="d-flex flex-row justify-center align-center"
+            >
+              <v-icon icon="mdi-account-circle"></v-icon>
+            </div>
+
+            <div :style="{ height: `${layout.item_height}px`, zIndex:2}">
+              <RowRoseOfStu
+                :dataobj="findObjectByID(id)"
+                :height="layout.item_height"
+                :gray_color="gray_color"
+              ></RowRoseOfStu>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -31,9 +55,14 @@
 </template>
 <script>
 import RowRoseOfStu from "@/components/sub_components/RowRoseOfStu.vue";
-import WeekRosedata from "../data/WeekRosedata.json";
+import WeekRosedata from "@/data/week_view_data.json";
 import * as d3 from "d3";
+import { clusterStore } from "@/store";
+
 export default {
+  components: {
+    RowRoseOfStu,
+  },
   data() {
     return {
       //需要绘制的学生ID
@@ -45,7 +74,19 @@ export default {
         "a8eea517e36b20757b2e",
         "e89cdaa3f159a0d3f55e",
       ],
+      layout: {
+        calender_height: 100,
+        user_icon_width: 50,
+        item_height: 100,
+        item_width: 100,
+      },
+      gray_color: "#F5F5F5",
     };
+  },
+  computed: {
+    selected_students() {
+      return clusterStore().selected_students;
+    },
   },
   methods: {
     findObjectByID(id) {
