@@ -1,13 +1,13 @@
 <template>
-  <div class="h-100 w-100 pa-2 d-flex flex-column">
+  <div class="h-100 w-100 pa-2 d-flex flex-column ">
     <div class="text-body-1 font-weight-bold">Student View</div>
     <v-divider></v-divider>
     <div
       ref="container"
-      class="w-100 h-100 pa-2 overflow-scroll overflow-x-auto" v-if="selected_students.length > 0"
+      class="w-100 h-100 pa-2 overflow-scroll overflow-x-hidden"
+      v-if="selected_students.length > 0"
     >
       <v-card
-        
         v-for="(item, index) in selected_students_features"
         :key="index"
         class="my-4 elevation-3"
@@ -22,9 +22,7 @@
           </div>
           <v-divider class="mt-2"></v-divider>
           <div class="d-flex flex-row text-body-2">
-            <div class="w-25 d-flex flex-row align-center justify-center">
-              
-            </div>
+            <div class="w-25 d-flex flex-row align-center justify-center"></div>
             <div class="w-50 d-flex flex-row align-center justify-center">
               <v-btn
                 variant="text"
@@ -42,7 +40,20 @@
         </v-card-text>
       </v-card>
     </div>
-    <div v-else class="flex-grow-1 d-flex flex-row align-center justify-center text-body-2 text-grey">Please select some students to start</div>
+    <div
+      v-else
+      class="flex-grow-1 d-flex flex-row align-center justify-center text-body-2 text-grey"
+    >
+      Please select some students to start
+    </div>
+    <div
+      v-if="tooltip.show"
+      id="student-view-tooltip-card"
+      class="rounded-pill bg-grey-lighten-2 text-body-2 d-flex flex-row align-center justify-center pa-2"
+      style="position: absolute; height: 30px"
+    >
+      {{ tooltip.text }}
+    </div>
   </div>
 </template>
 
@@ -82,6 +93,10 @@ export default {
         "mem_rank_percent",
       ],
       feature_selected: 0,
+      tooltip: {
+        show: false,
+        text: null,
+      },
     };
   },
   computed: {
@@ -96,13 +111,12 @@ export default {
   },
   watch: {
     selected_students() {
-        this.$nextTick(() => {
-          this.draw();
-        });
+      this.$nextTick(() => {
+        this.draw();
+      });
     },
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     draw() {
       const selected_students_features = this.selected_students_features;
@@ -110,12 +124,13 @@ export default {
         const container_ref = this.$refs.svg_container[index];
         const height = container_ref.clientHeight;
         const student_id = item.student_ID;
-        const cluster = clusterStore().result.filter(d => d.student_ID == student_id)[0].cluster;
+        const cluster = clusterStore().result.filter(
+          (d) => d.student_ID == student_id
+        )[0].cluster;
         // const cluster = 0;
         const bg_color = clusterStore().colors[cluster] + "3e";
         const line_color = clusterStore().colors[cluster];
-        d3
-          .select(container_ref).html("");
+        d3.select(container_ref).html("");
         const svg = d3
           .select(container_ref)
           .append("svg")
@@ -159,28 +174,59 @@ export default {
           .attr("y2", (d, i) => yScale(i))
           .attr("stroke", bg_color)
           .attr("stroke-width", 3)
-          .attr("stroke-linecap", "round");
+          .attr("stroke-linecap", "round")
+          .style("cursor", "pointer")
+          .on("mouseover", (e, d) => {
+            this.tooltip.text = d.title_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#student-view-tooltip-card")
+                .style("left", e.clientX - 280 + "px")
+                .style("top", e.clientY - 15 + "px");
+            });
+          })
+          .on("mouseout", () => {
+            this.tooltip.show = false;
+          });
         //   画右侧的分数
         svg
           .append("g")
           .selectAll("line")
-          .data(student_view_data.students[student_id])
+          .data(student_view_data.titles)
           .join("line")
           .attr("x1", width / 2 + margin2tree)
           .attr("y1", (d, i) => yScale(i))
           .attr(
             "x2",
-            (d) => width / 2 + margin2tree + score_length_scale(d.best_score)
+            (d, i) =>
+              width / 2 +
+              margin2tree +
+              score_length_scale(
+                student_view_data.students[student_id][i].best_score
+              )
           )
           .attr("y2", (d, i) => yScale(i))
+          .style("cursor", "pointer")
           .attr("stroke", line_color)
           .attr("stroke-width", 5)
-          .attr("stroke-linecap", "round");
+          .attr("stroke-linecap", "round")
+          .on("mouseover", (e, d) => {
+            this.tooltip.text = d.title_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#student-view-tooltip-card")
+                .style("left", e.clientX - 280 + "px")
+                .style("top", e.clientY - 15 + "px");
+            });
+          })
+          .on("mouseout", () => {
+            this.tooltip.show = false;
+          });
         //   画左侧的背景
         svg
           .append("g")
           .selectAll("line")
-          .data(Array.from({ length: title_num }))
+          .data(Array.from({ length: title_num }, (_, i) => i))
           .join("line")
           .attr("x1", width / 2)
           .attr("y1", (d, i) => yScale(i))
@@ -188,26 +234,62 @@ export default {
           .attr("y2", (d, i) => yScale(i))
           .attr("stroke", bg_color)
           .attr("stroke-width", 3)
-          .attr("stroke-linecap", "round");
+          .style("cursor", "pointer")
+          .attr("stroke-linecap", "round")
+          .on("mouseover", (e, d) => {
+            this.tooltip.text = student_view_data.titles[d].title_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#student-view-tooltip-card")
+                .style("left", e.clientX - 280 + "px")
+                .style("top", e.clientY - 15 + "px");
+            });
+          })
+          .on("mouseout", () => {
+            this.tooltip.show = false;
+          });
         //   画左侧的分数
-
         svg
           .append("g")
           .classed("g-student-view-right-" + student_id, true)
           .selectAll("circle")
-          .data(
-            student_view_data.students[student_id].map(
-              (d) => d[this.feature_choices_name[this.feature_selected]]
-            )
-          )
+          .data(Array.from({ length: title_num }, (_, i) => i))
           .join("circle")
-          .attr("cy", (d, i) => yScale(i))
+          .attr("cy", (d) => yScale(d))
+          .style("cursor", "pointer")
           .attr("r", 4)
           .attr("fill", line_color)
           .attr(
             "cx",
-            (d) => padding_x + sub_knowledge_width + margin2tree + rightScale(d)
-          ).attr('visibility', d => d == -1 ? 'hidden' : 'visible');
+            (d) =>
+              padding_x +
+              sub_knowledge_width +
+              margin2tree +
+              rightScale(
+                student_view_data.students[student_id].map(
+                  (k) => k[this.feature_choices_name[this.feature_selected]]
+                )[d]
+              )
+          )
+          .attr("visibility", (d) =>
+            student_view_data.students[student_id].map(
+              (k) => k[this.feature_choices_name[this.feature_selected]]
+            )[d] == -1
+              ? "hidden"
+              : "visible"
+          )
+          .on("mouseover", (e, d) => {
+            this.tooltip.text = student_view_data.titles[d].title_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#student-view-tooltip-card")
+                .style("left", e.clientX - 280 + "px")
+                .style("top", e.clientY - 15 + "px");
+            });
+          })
+          .on("mouseout", () => {
+            this.tooltip.show = false;
+          });
         // 画树
         const line = d3
           .line()
@@ -318,6 +400,8 @@ export default {
             });
           tmp += d;
         });
+        // 画一个遮罩层
+        svg.append('rect').attr('width', width*3).attr('height', height).attr('fill', 'white').attr('opacity', 0.6).attr('transform', `translate(-${width} 0)`)
       });
     },
     changeSelectedFeature() {
@@ -326,15 +410,20 @@ export default {
         const container_ref = this.$refs.svg_container[index];
         d3.select(`.g-student-view-right-${sid}`)
           .selectAll("circle")
-          .data(
-            student_view_data.students[sid].map(
-              (d) => d[this.feature_choices_name[this.feature_selected]]
-            )
-          )
-          .join("circle")
           .transition()
           .duration(300)
-          .attr("cx", (d) => padding_x + sub_knowledge_width + margin2tree + rightScale(d));
+          .attr(
+            "cx",
+            (d) =>
+              padding_x +
+              sub_knowledge_width +
+              margin2tree +
+              rightScale(
+                student_view_data.students[sid].map(
+                  (k) => k[this.feature_choices_name[this.feature_selected]]
+                )[d]
+              )
+          );
       });
     },
   },

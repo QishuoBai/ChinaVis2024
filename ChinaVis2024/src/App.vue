@@ -334,14 +334,17 @@ export default {
 }
 /* 自定义 Webkit 滚动条样式 */
 ::-webkit-scrollbar {
-  width: 8px; /* 滚动条宽度 */
-  height: 8px; /* 水平滚动条高度 */
+  width: 10px; /* 滚动条宽度 */
+  height: 10px; /* 水平滚动条高度 */
+  cursor: pointer;
+  
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #00000049; /* 滚动条滑块颜色 */
   border-radius: 6px; /* 滑块圆角 */
   border: 2px solid #fff; /* 滑块与轨道之间的间隙 */
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar-track {

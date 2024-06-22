@@ -16,22 +16,29 @@
         </v-list>
       </div>
     </div>
-    <div
-      id="TitleTooltip"
-      style="height: 200px; width: 400px; position: absolute; left: 200px; display: none;"
-    >
-      <v-card>
-        <template v-slot:title class="text-h5">{{this.Info_Tooltip.title}}</template>
-        <div class="d-flex flex-column py-0 justify-space-around text-body-2">
-          <v-list-item>
-            <p>mean_score:{{this.Info_Tooltip.score}}</p>
-          </v-list-item>
-          <v-list-item>
-            <p>mean_sbmnum:{{this.Info_Tooltip.sbmnum}}</p>
-          </v-list-item>
-        </div>
-      </v-card>
-    </div>
+    <v-expand-x-transition><v-card id="TitleTooltip" class="elevation-5 border-thin rounded-lg" v-show="Info_Tooltip.show" style="
+        height: 120px;
+        width: auto;
+        position: absolute;
+      ">
+        <v-card-title
+          >
+          <v-chip >
+            {{ this.Info_Tooltip.title }}
+          </v-chip>
+          </v-card-title
+        >
+        <v-card-text class="text-body-2 mt-2 mb-0 text-no-wrap"
+          >
+            <div class="d-flex flex-row">
+              <div class="w-50">Avg. Score:</div><div>{{ this.Info_Tooltip.score }}</div>
+            </div>
+            <div class="d-flex flex-row mt-1">
+              <div class="w-50">Avg. Submit Num:</div><div>{{ this.Info_Tooltip.sbmnum }}</div>
+            </div>
+            </v-card-text
+        >
+      </v-card></v-expand-x-transition>
   </div>
 </template>
 <script>

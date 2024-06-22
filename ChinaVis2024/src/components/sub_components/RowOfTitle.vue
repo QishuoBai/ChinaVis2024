@@ -56,8 +56,9 @@ export default {
         .domain([10, 50])
         .range([this.RI / 3, this.RI]);
       const handleMouseOverCircle = (e) => {
-        console.log(e.target.getAttribute("tid"), data.title_ID);
+        // console.log(e.target.getAttribute("tid"), data.title_ID);
         clusterStore().hoverTitleInfo = {
+          show: true,
           title: data.title_ID,
           score: `${((data.t_Fullscore * data.t_mean_score) / 100).toFixed(
             2
@@ -66,7 +67,6 @@ export default {
           sbmnum: data.t_mean_sbmnum.toFixed(2),
         };
         d3.select("#TitleTooltip")
-          .style("display", "block")
           .style("left", e.clientX + 5 + "px")
           .style("top", e.clientY + 5 + "px");
       };
@@ -82,7 +82,7 @@ export default {
         .attr("cursor", "pointer")
         .on("mouseover", handleMouseOverCircle)
         .on("mouseout", () => {
-          d3.select("#TitleTooltip").style("display", "none");
+          clusterStore().hoverTitleInfo.show = false;
         });
       circles
         .append("circle")
@@ -99,7 +99,7 @@ export default {
         .attr("y", 5)
         .on("mouseover", handleMouseOverCircle)
         .on("mouseout", () => {
-          d3.select("#TitleTooltip").style("display", "none");
+          clusterStore().hoverTitleInfo.show = false;
         });
     },
     drawScore(svg, data) {
@@ -265,7 +265,10 @@ export default {
         .scaleQuantize()
         .domain([0, 152])
         .range(d3.range(0, this.Num_segment + 1));
-      const yScale = d3.scaleLinear().domain([0, 4]).range([0, this.bandHeight*5]);
+      const yScale = d3
+        .scaleLinear()
+        .domain([0, 4])
+        .range([0, this.bandHeight * 5]);
 
       g.selectAll()
         .data(data.t_s_Submit)
