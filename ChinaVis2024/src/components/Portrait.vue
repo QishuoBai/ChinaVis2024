@@ -3,7 +3,10 @@
     <div class="text-body-1 font-weight-bold">Portrait View</div>
     <v-divider></v-divider>
     <div class="flex-grow-1 mt-2 d-flex flex-row" style="height: 0px">
-      <div style="width: 80%" class="d-flex flex-row rounded elevation-2 border-thin">
+      <div
+        style="width: 80%"
+        class="d-flex flex-row rounded elevation-2 border-thin"
+      >
         <div
           v-for="index in cluster_num"
           :key="index"
@@ -17,7 +20,8 @@
           :style="{
             border:
               (selected_cluster == index || selected_cluster == 0 ? '1' : '0') +
-              'px solid black', width: '33%'
+              'px solid black',
+            width: '33%',
           }"
         ></div>
       </div>
@@ -95,12 +99,14 @@ export default {
   watch: {
     cluster_result() {
       [1, 2, 3].forEach((cid) => {
-        this.draw_cluster(cid);this.draw_legend();
+        this.draw_cluster(cid);
+        this.draw_legend();
       });
     },
     selected_students() {
       [1, 2, 3].forEach((cid) => {
-        this.draw_cluster(cid);this.draw_legend();
+        this.draw_cluster(cid);
+        this.draw_legend();
       });
     },
     test() {
@@ -235,10 +241,11 @@ export default {
                 )
                 .startAngle(startAngle)
                 .endAngle(endAngle)
-                .padAngle(0.01)
+                .padAngle(0.02)
             )
             .attr("fill", this.cluster_color[cid - 1])
-            .attr("opacity", 0.8);
+            .attr("fill-opacity", 0.8)
+            .attr("stroke", this.cluster_color[cid - 1]);
           startAngle = endAngle;
           sub_index++;
         }
@@ -267,12 +274,34 @@ export default {
       let g_inner = g
         .append("g")
         .attr("transform", `translate(${centerX} ${centerY})`);
+      // 创建渐变
+      const defs = svg.append("defs");
+      const gradient = defs
+        .append("radialGradient")
+        .attr("id", `radial-gradient-${cid}`)
+        .attr("cx", "50%")
+        .attr("cy", "50%")
+        .attr("r", "50%")
+        .attr("fx", "50%")
+        .attr("fy", "50%");
+
+      // 定义渐变的颜色
+      gradient
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", this.cluster_color[cid - 1])
+        .attr("stop-opacity", 0);
+      gradient
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", this.cluster_color[cid - 1])
+        .attr("stop-opacity", 0.1);
       g_inner
         .append("path")
         .datum(features_xy)
         .attr("d", radarLine)
-        .attr("fill", "none")
-        .attr("fill-opacity", 0.5)
+        .attr("fill", `url(#radial-gradient-${cid})`)
+        .attr("fill-opacity", 1)
         .attr("stroke", this.cluster_color[cid - 1])
         .attr("stroke-width", 2);
       // 画高亮学生
@@ -320,7 +349,8 @@ export default {
                   .padAngle(0.01)
               )
               .attr("fill", "none")
-              .attr("stroke", "black");
+              .attr("stroke", "black")
+              .attr("stroke-width", 2);
             startAngle = endAngle;
             sub_index++;
           }
@@ -383,10 +413,8 @@ export default {
       const width = this.$refs["legend-1"].clientWidth;
       let centerX = width / 2;
       let centerY = height / 2;
-      d3
-        .select(this.$refs["legend-1"]).html("");
-        d3
-        .select(this.$refs["legend-2"]).html("");
+      d3.select(this.$refs["legend-1"]).html("");
+      d3.select(this.$refs["legend-2"]).html("");
       // legend1
       let r1 = 40;
       let r2 = 50;
@@ -404,7 +432,7 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
-        .attr('class' , d => `knowledge-legend knowledge-legend-${d}`)
+        .attr("class", (d) => `knowledge-legend knowledge-legend-${d}`)
         .attr(
           "d",
           d3
@@ -416,7 +444,12 @@ export default {
             .padAngle(0.01)
         )
         .attr("fill", (d, i) => this.cluster_color[0])
-        .attr("opacity", d => (clusterStore().selected_knowledge == '' || clusterStore().selected_knowledge == d)?0.8:0.25);
+        .attr("opacity", (d) =>
+          clusterStore().selected_knowledge == "" ||
+          clusterStore().selected_knowledge == d
+            ? 0.8
+            : 0.25
+        );
       svg
         .append("g")
         .attr("transform", `translate(${centerX} ${centerY})`)
@@ -437,18 +470,30 @@ export default {
           (d, i) => r2 * Math.sin(i * (Math.PI / 4) + Math.PI / 8 - Math.PI / 2)
         )
         .attr("font-size", 10);
-        svg
+      svg
         .append("g")
-        .attr("transform", `translate(${centerX} ${centerY-10})`)
-        .append('text').text('Mastery').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
-        svg
+        .attr("transform", `translate(${centerX} ${centerY - 10})`)
+        .append("text")
+        .text("Mastery")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("font-size", 10);
+      svg
         .append("g")
         .attr("transform", `translate(${centerX} ${centerY})`)
-        .append('text').text('of').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
-        svg
+        .append("text")
+        .text("of")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("font-size", 10);
+      svg
         .append("g")
-        .attr("transform", `translate(${centerX} ${centerY+10})`)
-        .append('text').text('Knowledges').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
+        .attr("transform", `translate(${centerX} ${centerY + 10})`)
+        .append("text")
+        .text("Knowledges")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("font-size", 10);
       // legend2
       centerY -= 10;
       svg = d3
@@ -490,9 +535,15 @@ export default {
           "y2",
           (d, i) => centerY + r1 * Math.sin(i * (Math.PI / 4) - Math.PI / 2)
         )
-        .attr("stroke", d => clusterStore().features4cluster.includes(d) ? "black" : "lightgray")
-        .attr("stroke-dasharray", d => clusterStore().features4cluster.includes(d) ? "none" : "5,5")
-        .attr("stroke-width", d => clusterStore().features4cluster.includes(d) ? 1 : 1);
+        .attr("stroke", (d) =>
+          clusterStore().features4cluster.includes(d) ? "black" : "lightgray"
+        )
+        .attr("stroke-dasharray", (d) =>
+          clusterStore().features4cluster.includes(d) ? "none" : "5,5"
+        )
+        .attr("stroke-width", (d) =>
+          clusterStore().features4cluster.includes(d) ? 1 : 1
+        );
       svg
         .append("g")
         .selectAll("text")
@@ -516,15 +567,31 @@ export default {
           return "end";
         })
         .attr("alignment-baseline", "middle");
-        const label_mt = 30;
-        let g = svg
-        .append("g").attr("transform", `translate(-30 0)`);
-        g.append("line").attr("x1", centerX).attr("y1", centerY + r1 + label_mt).attr("x2", centerX - r1).attr("y2", centerY + r1 + label_mt).attr("stroke", "black").attr("stroke-width", 1);
-        g.append("text").attr("x", centerX + 5).attr("y", centerY + r1 + label_mt).text('features for cluster').attr("font-size", 10).attr("text-anchor", "start").attr("alignment-baseline", "middle");
+      const label_mt = 30;
+      let g = svg.append("g").attr("transform", `translate(-30 0)`);
+      g.append("line")
+        .attr("x1", centerX)
+        .attr("y1", centerY + r1 + label_mt)
+        .attr("x2", centerX - r1)
+        .attr("y2", centerY + r1 + label_mt)
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
+      g.append("text")
+        .attr("x", centerX + 5)
+        .attr("y", centerY + r1 + label_mt)
+        .text("features for cluster")
+        .attr("font-size", 10)
+        .attr("text-anchor", "start")
+        .attr("alignment-baseline", "middle");
     },
     highlightSelectedKnowledge() {
       d3.selectAll(".knowledge-highlight").attr("visibility", "hidden");
-      d3.selectAll(".knowledge-legend").attr("opacity", d => (clusterStore().selected_knowledge == '' || clusterStore().selected_knowledge == d)?0.8:0.25);
+      d3.selectAll(".knowledge-legend").attr("opacity", (d) =>
+        clusterStore().selected_knowledge == "" ||
+        clusterStore().selected_knowledge == d
+          ? 0.8
+          : 0.25
+      );
       if (clusterStore().selected_knowledge != "") {
         d3.selectAll(
           `.knowledge-${clusterStore().selected_knowledge}-highlight`
@@ -534,5 +601,4 @@ export default {
   },
 };
 </script>
-<style>
-</style>
+<style></style>

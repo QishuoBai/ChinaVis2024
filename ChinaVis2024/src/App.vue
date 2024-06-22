@@ -329,12 +329,28 @@ export default {
 * {
   font-family: "Roboto";
 }
-.hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+.hide-scrollbar::-webkit-scrollbar {
+    width: 0px; /* 滚动条宽度 */
+}
+/* 自定义 Webkit 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px; /* 滚动条宽度 */
+  height: 8px; /* 水平滚动条高度 */
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+::-webkit-scrollbar-thumb {
+  background-color: #00000049; /* 滚动条滑块颜色 */
+  border-radius: 6px; /* 滑块圆角 */
+  border: 2px solid #fff; /* 滑块与轨道之间的间隙 */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 滚动条轨道颜色 */
+  border-radius: 6px; /* 轨道圆角 */
+}
+
+::-webkit-scrollbar-button {
+  display: none; 
+  /* 隐藏滚动条的按钮 */
 }
 </style>

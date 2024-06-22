@@ -37,8 +37,8 @@
               :style="{ width: `${layout.user_icon_width}px` }"
               class="d-flex flex-column justify-center align-center"
             >
-              <v-icon icon="mdi-account-circle"></v-icon>
-              <v-chip size="x-small" variant="outlined">{{id.slice(0, 5)}}</v-chip>
+              <v-icon icon="mdi-account-circle" color="grey"></v-icon>
+              <v-chip size="x-small">{{id.slice(0, 5)}}</v-chip>
             </div>
 
             <div :style="{ height: `${layout.item_height}px`, zIndex:2}">
@@ -69,7 +69,7 @@ export default {
       //需要绘制的学生ID
       layout: {
         calender_height: 100,
-        user_icon_width: 50,
+        user_icon_width: 60,
         item_height: 100,
         item_width: 100,
       },

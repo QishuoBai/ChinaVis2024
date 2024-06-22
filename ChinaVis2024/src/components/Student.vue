@@ -4,7 +4,7 @@
     <v-divider></v-divider>
     <div
       ref="container"
-      class="w-100 h-100 pa-2 overflow-scroll overflow-x-auto hide-scrollbar" v-if="selected_students.length > 0"
+      class="w-100 h-100 pa-2 overflow-scroll overflow-x-auto" v-if="selected_students.length > 0"
     >
       <v-card
         
