@@ -8,7 +8,6 @@
         <v-dialog v-model="search_dialog" max-width="600">
           <template v-slot:activator="{ props: activatorProps }">
             <v-icon
-              class="mx-2"
               icon="mdi-magnify"
               size="small"
               v-bind="activatorProps"
@@ -39,14 +38,10 @@
           </v-card>
         </v-dialog>
         <v-icon
-          @click="changeModel_Click()"
-          icon="mdi-mouse"
-          size="small"
-        ></v-icon>
-        <v-icon
           @click="changeModel_Brush()"
           icon="mdi-brush-variant"
           size="small"
+          class="mx-2"
         ></v-icon>
         <v-icon
           @click="clearSelectedID()"
@@ -83,7 +78,7 @@
           Cluster{{ index }}</v-btn
         >
       </div>
-      <div ref="svg_container" class="w-100 flex-grow-1 border rounded"></div>
+      <div ref="svg_container" class="w-100 flex-grow-1 border rounded elevation-2"></div>
     </div>
   </div>
 </template>
@@ -98,13 +93,16 @@ export default {
     return {
       cluster_num: 3,
       selected: {
-        cluster: 0, // 0 标识全选
+        cluster: -1, // 0 标识全选
         stu_IDs: [],
       },
       search_dialog: false,
       search_reault: null,
       xScale: null,
       yScale: null,
+      brush_mode: false,
+      brush: null,
+      brush_students: [],
     };
   },
   computed: {
@@ -127,11 +125,10 @@ export default {
       this.hightlightSelected();
     },
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     draw_scatter() {
-      const svg_height = this.$refs.svg_container.clientHeight;
+      const svg_height = this.$refs.svg_container.clientHeight-4;
       const svg_width = this.$refs.svg_container.clientWidth;
       const cluster_color = this.cluster_color;
       const data = this.cluster_result;
@@ -166,7 +163,9 @@ export default {
         .attr("fill", (d) => cluster_color[d.cluster])
         // .attr("cursor", "pointer")
         .style("fill-opacity", 0.6)
-        .attr("stroke", "none");
+        .attr("stroke", "none")
+        .attr("cursor", "pointer")
+        .on("click", this.EventClick);
       // 画有stoke的散点，以保证高亮时的部分点不被遮挡
       svg
         .append("g")
@@ -175,22 +174,27 @@ export default {
         .data(data)
         .enter()
         .append("circle")
-        .attr("class", "scatter")
+        .attr("class", "stroke-scatter")
         .attr("cx", (d) => this.xScale(d.x))
         .attr("cy", (d) => this.yScale(d.y))
         .attr("r", 4)
         .attr("fill", (d) => cluster_color[d.cluster])
-        // .attr("cursor", "pointer")
         .style("fill-opacity", 0.6)
         .attr("stroke", "black")
         .attr("visibility", (d) =>
           this.selected.stu_IDs.includes(d.student_ID) ? "visible" : "hidden"
-        );
+        )
+        .attr("cursor", "pointer")
+        .on("click", this.EventClick);
+        this.brush = d3.brush()
+            .on("brush", this.EventBrushing)
+            .on("end", this.EventBrushEnd);
+        
     },
     clickCluster(index) {
+        return;
       this.selected.cluster = this.selected.cluster == index ? 0 : index;
       clusterStore().selected_cluster = this.selected.cluster;
-      //   console.log(this.cluster_result);
     },
     clearSelectedID() {
       this.selected.stu_IDs = [];
@@ -198,6 +202,7 @@ export default {
       clusterStore().selected_students = [];
     },
     EventClick(e, d) {
+      if (this.brush_mode == true) return;
       if (this.selected.stu_IDs.includes(d.student_ID)) {
         this.selected.stu_IDs = this.selected.stu_IDs.filter(
           (id) => id != d.student_ID
@@ -209,40 +214,42 @@ export default {
       this.hightlightSelected();
       clusterStore().selected_students = [...this.selected.stu_IDs];
     },
-    EventBrush({ selection }) {
+    EventBrushing({ selection }) {
+      if (this.brush_mode == false) return;
       const svg = d3.select(this.$refs.svg_container).select("svg");
       const [[x0, y0], [x1, y1]] = selection;
+      d3
+        .selectAll(".stroke-scatter")
+        .attr('visibility', 'hidden');
       const circles = d3
-        .selectAll(".scatter")
+        .selectAll(".stroke-scatter")
         .filter(
           (d) =>
             x0 <= this.xScale(d.x) &&
             this.xScale(d.x) < x1 &&
             y0 <= this.yScale(d.y) &&
             this.yScale(d.y) < y1
-        );
+        ).attr('visibility', 'visible');
       const stuList = [];
       circles._groups[0].forEach((element) => {
         stuList.push(element.__data__.student_ID);
       });
-      this.selected.stu_IDs = stuList;
+      this.brush_students = stuList;
+      
+    },
+    EventBrushEnd({ selection }) {
+      if (this.brush_mode == false) return;
+      this.selected.stu_IDs = this.brush_students;
       clusterStore().selected_students = [...this.selected.stu_IDs];
     },
-    changeModel_Click() {
-      // 禁用了监听器，但是brush行为本身没取消
-      // d3.select(this.$refs.svg_container)
-      //   .select("svg").call(d3.brush().on("brush", null))
-      // console.log(d3.select("svg").style('cursor', 'default'))
-      
-      d3.selectAll(".scatter")
-        .attr("cursor", "pointer")
-        .on("click", this.EventClick);
-    },
     changeModel_Brush() {
-      d3.selectAll(".scatter").on("click", null).attr("cursor", null);
-      d3.select(this.$refs.svg_container)
-        .select("svg")
-        .call(d3.brush().on("brush", this.EventBrush));
+      this.brush_mode = !this.brush_mode;
+      const svg = d3.select(this.$refs.svg_container).select("svg");
+      if (this.brush_mode) {
+        svg.append("g").attr("class", "brush").call(this.brush);
+      }else{
+        svg.select(".brush").remove();
+      }
     },
     confirmSearch() {
       // console.log(this.search_reault);

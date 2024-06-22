@@ -66,14 +66,6 @@ export default {
   data() {
     return {
       //需要绘制的学生ID
-      stu_IDs: [
-        "8b6d1125760bd3939b6e",
-        "63eef37311aaac915a45",
-        "5d89810b20079366fcc2",
-        "47eeab842793b09300c3",
-        "a8eea517e36b20757b2e",
-        "e89cdaa3f159a0d3f55e",
-      ],
       layout: {
         calender_height: 100,
         user_icon_width: 50,

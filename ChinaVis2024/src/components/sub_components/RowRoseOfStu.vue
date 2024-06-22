@@ -25,18 +25,7 @@ export default {
     cluster_result() {
       return clusterStore().result;
     },
-    // selected_students() {
-    //   return clusterStore().selected_students;
-    // },
   },
-//   watch: {
-//     cluster_result() {
-//       this.draw();
-//     },
-//     selected_students() {
-//       this.draw();
-//     },
-//   },
   props: {
     dataobj: Object,
     height: Number,

@@ -5,7 +5,7 @@ export const clusterStore = defineStore('cluster', {
     state: () => {
         return {
             result: [],
-            selected_cluster: 0, // 0 是全选
+            selected_cluster: -1, // 0 是全选 , -1 表示这个不用了
             colors: d3.schemeCategory10,
             selected_students: [],
             selected_knowledge: "", // ""是全选

@@ -3,13 +3,13 @@
     <div class="text-body-1 font-weight-bold">Portrait View</div>
     <v-divider></v-divider>
     <div class="flex-grow-1 mt-2 d-flex flex-row" style="height: 0px">
-      <div style="width: 80%" class="d-flex flex-row rounded">
+      <div style="width: 80%" class="d-flex flex-row rounded elevation-2 border-thin">
         <div
           v-for="index in cluster_num"
           :key="index"
           ref="svg_container"
           :class="
-            'h-100 flex-shrink-0 rounded mx-1' +
+            'h-100 flex-shrink-0 rounded' +
             (selected_cluster == index || selected_cluster == 0
               ? ' elevation-2'
               : '')
@@ -17,9 +17,8 @@
           :style="{
             border:
               (selected_cluster == index || selected_cluster == 0 ? '1' : '0') +
-              'px solid black',
+              'px solid black', width: '33%'
           }"
-          style="width: 33%"
         ></div>
       </div>
       <div style="margin-left: 70px; width: 12%">
@@ -389,8 +388,8 @@ export default {
         d3
         .select(this.$refs["legend-2"]).html("");
       // legend1
-      let r1 = 35;
-      let r2 = 45;
+      let r1 = 40;
+      let r2 = 50;
       let svg = d3
         .select(this.$refs["legend-1"])
         .append("svg")
@@ -438,6 +437,18 @@ export default {
           (d, i) => r2 * Math.sin(i * (Math.PI / 4) + Math.PI / 8 - Math.PI / 2)
         )
         .attr("font-size", 10);
+        svg
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY-10})`)
+        .append('text').text('Mastery').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
+        svg
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY})`)
+        .append('text').text('of').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
+        svg
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY+10})`)
+        .append('text').text('Knowledges').attr('text-anchor', 'middle').attr('alignment-baseline','middle').attr('font-size',10);
       // legend2
       centerY -= 10;
       svg = d3
