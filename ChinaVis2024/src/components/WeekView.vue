@@ -35,9 +35,10 @@
           >
             <div
               :style="{ width: `${layout.user_icon_width}px` }"
-              class="d-flex flex-row justify-center align-center"
+              class="d-flex flex-column justify-center align-center"
             >
               <v-icon icon="mdi-account-circle"></v-icon>
+              <v-chip size="x-small" variant="outlined">{{id.slice(0, 5)}}</v-chip>
             </div>
 
             <div :style="{ height: `${layout.item_height}px`, zIndex:2}">
