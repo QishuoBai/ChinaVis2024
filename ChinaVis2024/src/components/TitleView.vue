@@ -2,7 +2,10 @@
   <div class="h-100 w-100 pa-2 d-flex flex-column">
     <div class="text-body-1 font-weight-bold">Title View</div>
     <v-divider></v-divider>
-    <div class="flex-grow-1 overflow-scroll overflow-x-auto hide-scrollbar" style="height: 0px">
+    <div
+      class="flex-grow-1 overflow-scroll overflow-x-auto hide-scrollbar"
+      style="height: 0px"
+    >
       <div class="TitlesContainer w-100 h-100">
         <v-list lines="one">
           <v-list-item v-for="tid in this.TitleList" :key="tid">
@@ -13,11 +16,27 @@
         </v-list>
       </div>
     </div>
+    <div
+      id="TitleTooltip"
+      style="height: 200px; width: 400px; position: absolute; left: 200px; display: none;"
+    >
+      <v-card>
+        <template v-slot:title class="text-h5">{{this.Info_Tooltip.title}}</template>
+        <div class="d-flex flex-column py-0 justify-space-around text-body-2">
+          <v-list-item>
+            <p>mean_score:{{this.Info_Tooltip.score}}</p>
+          </v-list-item>
+          <v-list-item>
+            <p>mean_sbmnum:{{this.Info_Tooltip.sbmnum}}</p>
+          </v-list-item>
+        </div>
+      </v-card>
+    </div>
   </div>
 </template>
 <script>
 import * as d3 from "d3";
-import TitleViewData from "../data/TitleViewData.json";
+import TitleViewData from "../data/TitleViewData2.json";
 import RowOfTitle from "@/components/sub_components/RowOfTitle.vue";
 import { clusterStore } from "@/store";
 import { knowledge2Titles } from "@/utils/asset";
@@ -36,13 +55,16 @@ export default {
     SelectedKnowledge() {
       return clusterStore().selected_knowledge;
     },
+    Info_Tooltip() {
+      return clusterStore().hoverTitleInfo;
+    },
   },
   watch: {
     SelectedKnowledge() {
       const listObj = knowledge2Titles.find(
         (obj) => obj.knowledge === this.SelectedKnowledge
-      )
-      this.TitleList = listObj.titleArr
+      );
+      this.TitleList = listObj.titleArr;
     },
   },
   methods: {
