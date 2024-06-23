@@ -4,7 +4,10 @@
       id="header"
       class="border-b-thin pa-1 px-3 bg-grey-darken-4 d-flex flex-row justify-space-between align-center"
     >
-      <div class="text-h6">LearnClusterVis</div>
+      <div class="text-h6 d-flex flex-row align-center">
+        <img src="/logo_white_1.png" style="height: 30px;"/>
+        <div>LearnClusterVis</div>
+      </div>
       <div class="d-flex flex-row align-center text-body-2">
         <div class="d-flex flex-row align-end mt-1">
           <div>Class:</div>
@@ -298,7 +301,7 @@ export default {
     },
     cluster() {
       clusterStore().selected_students = [];
-      clusterStore().selected_knowledge= "";
+      clusterStore().selected_knowledge = "";
       clusterStore().features4cluster = [
         ...this.cluster_config.features
           .filter((item) => item.use4cluster)
@@ -330,14 +333,13 @@ export default {
   font-family: "Roboto";
 }
 .hide-scrollbar::-webkit-scrollbar {
-    width: 0px; /* 滚动条宽度 */
+  width: 0px; /* 滚动条宽度 */
 }
 /* 自定义 Webkit 滚动条样式 */
 ::-webkit-scrollbar {
   width: 10px; /* 滚动条宽度 */
   height: 10px; /* 水平滚动条高度 */
   cursor: pointer;
-  
 }
 
 ::-webkit-scrollbar-thumb {
@@ -353,7 +355,7 @@ export default {
 }
 
 ::-webkit-scrollbar-button {
-  display: none; 
+  display: none;
   /* 隐藏滚动条的按钮 */
 }
 </style>

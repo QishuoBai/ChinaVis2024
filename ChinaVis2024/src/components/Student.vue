@@ -401,7 +401,7 @@ export default {
             (d) => yScale(d.range[1] + 0.5) - yScale(d.range[0] - 0.5)
           )
           .attr("fill", "white")
-          .attr("opacity", 0.6)
+          .attr("opacity", 0.85)
           .attr("transform", `translate(-${width} 0)`)
           .attr("visibility", (d) =>
             this.selected_knowledge == "" || this.selected_knowledge == d.name
