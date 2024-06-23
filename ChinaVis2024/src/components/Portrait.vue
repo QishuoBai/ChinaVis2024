@@ -1,6 +1,8 @@
 <template>
   <div class="h-100 w-100 pa-2 d-flex flex-column" style="width: 0px">
-    <div class="text-body-1 font-weight-bold">Portrait View</div>
+    <div class="d-flex flex-row justify-space-between align-center">
+      <div class="text-body-1 font-weight-bold">Portrait View</div>
+    </div>
     <v-divider></v-divider>
     <div class="flex-grow-1 mt-2 d-flex flex-row" style="height: 0px">
       <div
@@ -92,9 +94,6 @@ export default {
     selected_students() {
       return clusterStore().selected_students;
     },
-    test() {
-      return clusterStore().test;
-    },
   },
   watch: {
     cluster_result() {
@@ -108,9 +107,6 @@ export default {
         this.draw_cluster(cid);
         this.draw_legend();
       });
-    },
-    test() {
-      console.log("test");
     },
   },
   mounted() {
@@ -191,7 +187,7 @@ export default {
         .attr("fill", this.cluster_color[cid - 1])
         .attr("stroke", "none")
         .attr("cursor", "pointer")
-        .attr("visibility", "hidden")
+        .attr("visibility", d => (clusterStore().selected_knowledge == d)?'visible':'hidden')
         .attr("opacity", 0.3);
       let cur_cluster_stuids = this.cluster_result
         .filter((d) => d.cluster == cid - 1)
@@ -241,7 +237,7 @@ export default {
                 )
                 .startAngle(startAngle)
                 .endAngle(endAngle)
-                .padAngle(0.02)
+                .padAngle(0.028)
             )
             .attr("fill", this.cluster_color[cid - 1])
             .attr("fill-opacity", 0.8)
@@ -281,7 +277,7 @@ export default {
         .attr("id", `radial-gradient-${cid}`)
         .attr("cx", "50%")
         .attr("cy", "50%")
-        .attr("r", "50%")
+        .attr("r", "100%")
         .attr("fx", "50%")
         .attr("fy", "50%");
 
@@ -289,13 +285,14 @@ export default {
       gradient
         .append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", this.cluster_color[cid - 1])
+        // .attr("stop-color", this.cluster_color[cid - 1])
+        .attr("stop-color", '#fff')
         .attr("stop-opacity", 0);
       gradient
         .append("stop")
         .attr("offset", "100%")
         .attr("stop-color", this.cluster_color[cid - 1])
-        .attr("stop-opacity", 0.1);
+        .attr("stop-opacity", 1);
       g_inner
         .append("path")
         .datum(features_xy)
@@ -495,7 +492,7 @@ export default {
         .attr("alignment-baseline", "middle")
         .attr("font-size", 10);
       // legend2
-      centerY -= 10;
+      centerY -= 20;
       svg = d3
         .select(this.$refs["legend-2"])
         .append("svg")
@@ -567,7 +564,7 @@ export default {
           return "end";
         })
         .attr("alignment-baseline", "middle");
-      const label_mt = 30;
+      const label_mt = 25;
       let g = svg.append("g").attr("transform", `translate(-30 0)`);
       g.append("line")
         .attr("x1", centerX)
@@ -580,6 +577,20 @@ export default {
         .attr("x", centerX + 5)
         .attr("y", centerY + r1 + label_mt)
         .text("features for cluster")
+        .attr("font-size", 10)
+        .attr("text-anchor", "start")
+        .attr("alignment-baseline", "middle");
+      g.append("line")
+        .attr("x1", centerX)
+        .attr("y1", centerY + r1 + label_mt + 15)
+        .attr("x2", centerX - r1)
+        .attr("y2", centerY + r1 + label_mt + 15)
+        .attr("stroke", "grey").attr('stroke-dasharray','4,5')
+        .attr("stroke-width", 1);
+      g.append("text")
+        .attr("x", centerX + 5)
+        .attr("y", centerY + r1 + label_mt + 15)
+        .text("features")
         .attr("font-size", 10)
         .attr("text-anchor", "start")
         .attr("alignment-baseline", "middle");

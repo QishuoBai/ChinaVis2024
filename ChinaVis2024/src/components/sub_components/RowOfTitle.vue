@@ -126,8 +126,8 @@ export default {
           difficulty: this.Difficulty.toFixed(2),
         };
         d3.select("#TitleTooltip")
-          .style("left", e.clientX + 5 + "px")
-          .style("top", e.clientY + 5 + "px");
+          .style("left", e.clientX + 20 + "px")
+          .style("top", e.clientY + "px");
       };
 
       // 绘制区域

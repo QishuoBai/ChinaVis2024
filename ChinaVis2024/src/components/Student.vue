@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100 w-100 pa-2 d-flex flex-column ">
+  <div class="h-100 w-100 pa-2 d-flex flex-column">
     <div class="text-body-1 font-weight-bold">Student View</div>
     <v-divider></v-divider>
     <div
@@ -48,7 +48,7 @@
     </div>
     <div
       v-if="tooltip.show"
-      id="student-view-tooltip-card"
+      id="student-view-tooltip"
       class="rounded-pill bg-grey-lighten-2 text-body-2 d-flex flex-row align-center justify-center pa-2"
       style="position: absolute; height: 30px"
     >
@@ -83,6 +83,16 @@ const knowledges = [
   "y9W5d",
 ];
 
+const knowledges_titles_range = [];
+let prev_num = 0;
+knowledgeCount.forEach((d, i) => {
+  knowledges_titles_range.push({
+    name: d.name,
+    range: [prev_num, prev_num + d.num - 1],
+  });
+  prev_num += d.num;
+});
+
 export default {
   data() {
     return {
@@ -108,12 +118,25 @@ export default {
         this.selected_students.includes(d.student_ID)
       );
     },
+    selected_knowledge() {
+      return clusterStore().selected_knowledge;
+    },
   },
   watch: {
     selected_students() {
       this.$nextTick(() => {
         this.draw();
       });
+    },
+    selected_knowledge(newValue) {
+      console.log("!!@!#@!");
+      console.log(newValue);
+      console.log(d3.selectAll(".student-view-knowledge-overlay"));
+      d3.selectAll(".student-view-knowledge-overlay")
+        .data(knowledges_titles_range)
+        .attr("visibility", (d) =>
+          newValue == "" || newValue == d.name ? "hidden" : "visible"
+        );
     },
   },
   mounted() {},
@@ -145,16 +168,6 @@ export default {
           .scaleLinear()
           .domain([0, title_num - 1])
           .range([padding_y, height - padding_y]);
-        // 画中间的分隔线
-        // svg
-        //   .append("g")
-        //   .append("line")
-        //   .attr("x1", width / 2)
-        //   .attr("y1", 0)
-        //   .attr("x2", width / 2)
-        //   .attr("y2", height)
-        //   .attr("stroke", "black")
-        //   .attr("stroke-width", 1);
         //   画右侧的背景
         const score_length_scale = d3
           .scaleLinear()
@@ -180,7 +193,7 @@ export default {
             this.tooltip.text = d.title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -214,7 +227,7 @@ export default {
             this.tooltip.text = d.title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -240,7 +253,7 @@ export default {
             this.tooltip.text = student_view_data.titles[d].title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -282,7 +295,7 @@ export default {
             this.tooltip.text = student_view_data.titles[d].title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -313,13 +326,6 @@ export default {
           padding_x + sub_knowledge_width / 2,
           padding_x + sub_knowledge_width,
         ];
-        // const x = [
-        //   width / 2 - sub_knowledge_width,
-        //   width / 2 - sub_knowledge_width / 2,
-        //   width / 2,
-        //   width / 2 + sub_knowledge_width / 2,
-        //   width / 2 + sub_knowledge_width,
-        // ];
         let title_y = Array.from({ length: title_num }, (_, i) => yScale(i));
         let sk_y = [];
         let tmp = 0;
@@ -331,18 +337,6 @@ export default {
           title_y
             .filter((y, i) => i >= tmp && i < tmp + d)
             .forEach((t_y) => {
-              //   g.append("path")
-              //     .attr(
-              //       "d",
-              //       line([
-              //         { x: x[0], y: t_y },
-              //         { x: x[1], y: cur_sk_y },
-              //       ])
-              //     )
-              //     .attr("stroke", bg_color)
-              //     .attr("fill", "none")
-              //     .attr("stroke-width", line_width)
-              //     .attr("stroke-linecap", "round");
               g.append("path")
                 .attr(
                   "d",
@@ -373,18 +367,6 @@ export default {
           sk_y
             .filter((y, i) => i >= tmp && i < tmp + d)
             .forEach((t_y) => {
-              //   g.append("path")
-              //     .attr(
-              //       "d",
-              //       line([
-              //         { x: x[1], y: t_y },
-              //         { x: x[2], y: cur_k_y },
-              //       ])
-              //     )
-              //     .attr("stroke", bg_color)
-              //     .attr("fill", "none")
-              //     .attr("stroke-width", line_width)
-              //     .attr("stroke-linecap", "round");
               g.append("path")
                 .attr(
                   "d",
@@ -401,7 +383,31 @@ export default {
           tmp += d;
         });
         // 画一个遮罩层
-        svg.append('rect').attr('width', width*3).attr('height', height).attr('fill', 'white').attr('opacity', 0.6).attr('transform', `translate(-${width} 0)`)
+        console.log(knowledges_titles_range);
+        svg
+          .append("g")
+          .selectAll("rect")
+          .data(knowledges_titles_range)
+          .join("rect")
+          .attr(
+            "class",
+            (d) =>
+              `student-view-knowledge-overlay student-view-knowledge-overlay-${d.name}`
+          )
+          .attr("width", width * 3)
+          .attr("y", (d) => yScale(d.range[0] - 0.5))
+          .attr(
+            "height",
+            (d) => yScale(d.range[1] + 0.5) - yScale(d.range[0] - 0.5)
+          )
+          .attr("fill", "white")
+          .attr("opacity", 0.85)
+          .attr("transform", `translate(-${width} 0)`)
+          .attr("visibility", (d) =>
+            this.selected_knowledge == "" || this.selected_knowledge == d.name
+              ? "hidden"
+              : "visible"
+          );
       });
     },
     changeSelectedFeature() {

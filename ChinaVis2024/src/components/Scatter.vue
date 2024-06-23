@@ -80,6 +80,14 @@
       </div>
       <div ref="svg_container" class="w-100 flex-grow-1 border rounded elevation-2"></div>
     </div>
+    <div
+      v-if="tooltip.show"
+      id="scatter-view-tooltip"
+      class="rounded-pill bg-grey-lighten-2 text-body-2 d-flex flex-row align-center justify-center pa-2"
+      style="position: absolute; height: 30px"
+    >
+      {{ tooltip.text }}
+    </div>
   </div>
 </template>
 
@@ -103,6 +111,10 @@ export default {
       brush_mode: false,
       brush: null,
       brush_students: [],
+      tooltip:{
+        show:false,
+        text: null
+      }
     };
   },
   computed: {
@@ -165,7 +177,21 @@ export default {
         .style("fill-opacity", 0.6)
         .attr("stroke", "none")
         .attr("cursor", "pointer")
-        .on("click", this.EventClick);
+        .on("click", this.EventClick)
+        .on("mouseover", (e, d) => {
+            if(this.brush_mode) return;
+            this.tooltip.text = d.student_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#scatter-view-tooltip")
+                .style("left", e.clientX + 20 + "px")
+                .style("top", e.clientY + "px");
+            });
+          })
+          .on("mouseout", () => {
+            if(this.brush_mode) return;
+            this.tooltip.show = false;
+          });
       // 画有stoke的散点，以保证高亮时的部分点不被遮挡
       svg
         .append("g")
@@ -185,7 +211,21 @@ export default {
           this.selected.stu_IDs.includes(d.student_ID) ? "visible" : "hidden"
         )
         .attr("cursor", "pointer")
-        .on("click", this.EventClick);
+        .on("click", this.EventClick)
+        .on("mouseover", (e, d) => {
+            if(this.brush_mode) return;
+            this.tooltip.text = d.student_ID;
+            this.tooltip.show = true;
+            this.$nextTick(() => {
+              d3.select("#scatter-view-tooltip")
+                .style("left", e.clientX + 20 + "px")
+                .style("top", e.clientY + "px");
+            });
+          })
+          .on("mouseout", () => {
+            if(this.brush_mode) return;
+            this.tooltip.show = false;
+          });;
         this.brush = d3.brush()
             .on("brush", this.EventBrushing)
             .on("end", this.EventBrushEnd);
