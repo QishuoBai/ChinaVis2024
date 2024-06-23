@@ -440,7 +440,8 @@ export default {
             .endAngle((d, i) => (i + 1) * (Math.PI / 4))
             .padAngle(0.01)
         )
-        .attr("fill", (d, i) => this.cluster_color[0])
+        // .attr("fill", (d, i) => this.cluster_color[0])
+        .attr("fill", '#757575')
         .attr("opacity", (d) =>
           clusterStore().selected_knowledge == "" ||
           clusterStore().selected_knowledge == d

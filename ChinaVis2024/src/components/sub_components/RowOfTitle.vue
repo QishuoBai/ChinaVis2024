@@ -81,7 +81,7 @@ export default {
         .scaleLinear()
         .domain([0, 1])
         .range([0, this.ScoreBarLength]);
-      const color = d3.scaleOrdinal(d3.schemeAccent);
+      const color = clusterStore().title_score_colors;
       const sdObj = data.t_score_distribute;
       const SubNum = 1364;
       let base = 0;
@@ -93,7 +93,7 @@ export default {
           .attr("y2", 0)
           .attr("x2", size_scale(sdObj[key] / SubNum) + size_scale(base))
           .attr("stroke-width", this.ScoreBarHeight)
-          .attr("stroke", color(key))
+          .attr("stroke", color[key])
           .attr("stroke-linecap", "round")
           .attr("score", key);
         g.append("text")
@@ -169,7 +169,7 @@ export default {
         .attr("cx", xScale(data.t_SubmitMeanTime))
         .attr("cy", heightScale(this.Difficulty))
         .attr("r", R_OutScale(data.t_mean_sbmnum))
-        .attr("fill", "red")
+        .attr("fill", clusterStore().title_sun_color)
         .attr("cursor", "pointer")
         .on("mouseover", handleMouseOverCircle)
         .on("mouseout", () => {
@@ -177,11 +177,11 @@ export default {
         });
       g.append("circle")
         .attr("class", "Titlecircle")
-        .attr("opacity", 0.5)
+        .attr("opacity", 1)
         .attr("cx", xScale(data.t_SubmitMeanTime))
         .attr("cy", heightScale(this.Difficulty))
         .attr("r", R_InScale(data.t_mean_score))
-        .attr("fill", "red")
+        .attr("fill", clusterStore().title_sun_color)
         .attr("cursor", "pointer")
         // .attr("width", 100)
         // .attr("height", 50)
