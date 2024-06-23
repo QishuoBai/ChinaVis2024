@@ -69,7 +69,7 @@ export default {
       //需要绘制的学生ID
       layout: {
         calender_height: 100,
-        user_icon_width: 60,
+        user_icon_width: 50,
         item_height: 100,
         item_width: 100,
       },

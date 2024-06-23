@@ -1,6 +1,16 @@
 <template>
   <!-- <p class="ma-1">{{ dataobj.title_ID }}</p> -->
-  <div style="height: 150px" :id="'Title' + dataobj.title_ID"></div>
+  <div style="height: 150px" :id="'Title' + dataobj.title_ID">
+    <div class="position-absolute d-flex flex-row align-center">
+      <v-chip size="small"
+        >ID: {{ dataobj.title_ID.split("_")[1].slice(0, 5) }}</v-chip
+      >
+      <v-chip size="small" class="ml-2"
+        >Knowledge: {{ dataobj.belong_k }}</v-chip
+      >
+      <!-- <v-chip size="small" class="ml-2">Subknowledge: {{ dataobj.belong_sk.split('_')[1] }}</v-chip> -->
+    </div>
+  </div>
 </template>
 <script>
 import * as d3 from "d3";
@@ -15,20 +25,31 @@ export default {
       RI: 15, // circle内半径
       Width: 0,
       Height: 0,
-      MarginLeft: 30,
-      MarginBottom: 30,
-      MarginTop: 40,
-      ScoreBarLength: 300,
-      ScoreBarHeight: 20,
-      AreaLength: 300,
+      MarginLeft: 15,
+      MarginBottom: 12,
+      MarginTop: 60,
+      //   ScoreBarLength: 300,
+      ScoreBarHeight: 10,
+      //   AreaLength: 300,
       AreaHeight: 50,
       bandLength: 200,
       bandHeight: 8,
       bandSegNum: 10,
+      scoreBarPaddingLeft: 35,
+      scoreLabelTextSize: 12,
+      scoreNumTextSize: 10
     };
   },
   props: {
     dataobj: Object,
+  },
+  computed: {
+    AreaLength() {
+      return this.Width - this.MarginLeft * 2;
+    },
+    ScoreBarLength() {
+      return this.AreaLength - this.scoreBarPaddingLeft;
+    },
   },
   mounted() {
     this.Tid = this.dataobj.title_ID;
@@ -39,7 +60,8 @@ export default {
       .append("svg")
       .attr("width", this.Width)
       .attr("height", this.Height)
-      .attr("viewBox", [0, 0, this.Width, this.Height]);
+      .attr("viewBox", [0, 0, this.Width, this.Height])
+      .attr("overflow", "visible");
     this.drawSubmit(svg, this.dataobj);
     this.drawScore(svg, this.dataobj);
     // this.drawSubNum(svg, this.dataobj);
@@ -49,7 +71,12 @@ export default {
       const g = svg
         .append("g")
         .attr("name", "score_distribute_bars")
-        .attr("transform", `translate(${this.MarginLeft}, ${this.Height - this.MarginBottom})`);
+        .attr(
+          "transform",
+          `translate(${this.MarginLeft + this.scoreBarPaddingLeft}, ${this.Height - this.MarginBottom})`
+        );
+        g.append('g').append('text').text('Score').attr('font-size', this.scoreLabelTextSize).attr('text-anchor', 'end').attr('x', -10).attr('alignment-baseline','middle')
+        .attr('opacity', 1);
       const size_scale = d3
         .scaleLinear()
         .domain([0, 1])
@@ -58,23 +85,25 @@ export default {
       const sdObj = data.t_score_distribute;
       const SubNum = 1364;
       let base = 0;
-      Object.keys(sdObj).forEach((key) => {
-        g.append("rect")
-          .attr("x", size_scale(base))
-          .attr("y", 0)
-          .attr("width", size_scale(sdObj[key] / SubNum))
-          .attr("height", this.ScoreBarHeight)
-          .attr("fill", color(key))
+      const line_padding = 10;
+      Object.keys(sdObj).forEach((key, i) => {
+        g.append("line")
+          .attr("x1", size_scale(base))
+          .attr("y1", 0)
+          .attr("y2", 0)
+          .attr("x2", size_scale(sdObj[key] / SubNum) + size_scale(base))
+          .attr("stroke-width", this.ScoreBarHeight)
+          .attr("stroke", color(key))
+          .attr("stroke-linecap", "round")
           .attr("score", key);
         g.append("text")
           .text(key)
           .attr("x", () => size_scale(base))
-          .attr("y", this.ScoreBarHeight)
+          .attr("y", 0)
           .attr("fill", "black")
-          .attr("font-size", 15)
-          .attr("font-weight", "bold")
-          .attr("font-family", "sans-serif")
-          .attr("text-anchor", "start");
+          .attr("font-size", this.scoreNumTextSize)
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "middle");
         base += sdObj[key] / SubNum;
       });
     },
@@ -172,22 +201,23 @@ export default {
       // 绘制轴
       g.append("g")
         .attr("transform", `translate(${0}, ${this.AreaHeight})`)
+        .attr('opacity', 0.7)
         .call(
           d3
             .axisBottom(xScale)
-            .ticks(this.AreaLength / 80)
+            .ticks(5)
             .tickSizeOuter(0)
-            .tickFormat((d) => new Date(d * 1000).toLocaleString()) //修改标签为正常时间格式
+            .tickFormat((d) => new Date(d * 1000).toLocaleString().split(' ')[0]) //修改标签为正常时间格式
+        )
+        .call((g) =>
+          g
+            .append("text")
+            .attr("x", 0)
+            .attr("y", -4)
+            .attr("fill", "black")
+            .attr("text-anchor", "start").attr("alignment-baseline","bottom")
+            .text("Submit Time Line →")
         );
-      // .call((g) =>
-      //   g
-      //     .append("text")
-      //     .attr("x", 0)
-      //     .attr("y", 30)
-      //     .attr("fill", "black")
-      //     .attr("text-anchor", "start")
-      //     .text("Submit Time Line →")
-      // );
     },
     drawSubNum(svg, data) {
       const g = svg

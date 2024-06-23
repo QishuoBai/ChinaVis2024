@@ -131,8 +131,8 @@
           <div class="flex-grow-1 ml-1 bg-white rounded"><Portrait /></div>
         </div>
         <div class="flex-grow-1 d-flex flex-row mt-1">
-          <div class="w-50 h-100 mb-1 bg-white rounded"><TitleView /></div>
-          <div class="w-50 h-100 mb-1 ml-1 bg-white rounded"><WeekView /></div>
+          <div class="h-100 mb-1 bg-white rounded" style="width: 30%;"><TitleView /></div>
+          <div class="h-100 mb-1 ml-1 bg-white rounded" style="width: 70%;"><WeekView /></div>
         </div>
       </div>
       <div class="flex-grow-1 bg-white rounded ma-1 ml-0"><Student /></div>

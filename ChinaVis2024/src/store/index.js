@@ -9,7 +9,7 @@ export const clusterStore = defineStore('cluster', {
             // colors: ['#0079c3', '#f08300', '#00ada9'],
             colors: d3.schemeCategory10,
             selected_students: [],
-            selected_knowledge: "", // ""是全选
+            selected_knowledge: null, // ""是全选
             features4cluster: [],
             hoverTitleInfo: {
                 show: false,

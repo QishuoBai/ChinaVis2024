@@ -1,21 +1,35 @@
 <template>
   <div class="h-100 w-100 pa-2 d-flex flex-column">
-    <div class="text-body-1 font-weight-bold">Title View</div>
-    <v-divider></v-divider>
-    <div>
-      <v-switch v-model="sortOrder" label="Sort Order"></v-switch>
-    </div>
     <div
-      class="flex-grow-1 overflow-scroll overflow-x-auto hide-scrollbar"
+      class="text-body-1 font-weight-bold d-flex flex-row justify-space-between"
+    >
+      <div>Question View</div>
+      <div class="d-flex flex-row align-center text-body-2 font-weight-bold">
+        <div>Knowledges:</div>
+        <div class="ml-2">
+          {{ SelectedKnowledge == "" ? "All" : SelectedKnowledge }}
+        </div>
+        <v-btn
+          class="ml-4 text-body-2 font-weight-bold"
+          variant="text"
+          size="x-small"
+          :append-icon="ascending ? 'mdi-arrow-up' : 'mdi-arrow-down'"
+          @click="ascending = !ascending"
+          >Difficulty Order
+        </v-btn>
+      </div>
+    </div>
+    <v-divider></v-divider>
+    <div
+      class="flex-grow-1 overflow-scroll overflow-x-auto"
       style="height: 0px"
     >
       <div class="TitlesContainer w-100 h-100">
         <v-list lines="one">
           <v-list-item v-for="tid in this.TitleList" :key="tid">
-            <v-card variant="outlined">
-              <RowOfTitle :dataobj="findObjectByTitleID(tid)"></RowOfTitle>
-            </v-card>
+            <RowOfTitle :dataobj="findObjectByTitleID(tid)"></RowOfTitle><v-divider></v-divider>
           </v-list-item>
+          
         </v-list>
       </div>
     </div>
@@ -24,7 +38,7 @@
         id="TitleTooltip"
         class="elevation-5 border-thin rounded-lg"
         v-show="Info_Tooltip.show"
-        style="height: 150px; width: auto; position: absolute"
+        style="height: auto; width: auto; position: absolute; z-index: 999"
       >
         <v-card-title>
           <v-chip>
@@ -50,21 +64,18 @@
   </div>
 </template>
 <script>
-import * as d3 from "d3";
 import TitleViewData from "../data/TitleViewData.json";
 import RowOfTitle from "@/components/sub_components/RowOfTitle.vue";
 import { clusterStore } from "@/store";
 import { knowledge2Titles, AllTitleList, TitleListSorted } from "@/utils/asset";
 export default {
+  components: {
+    RowOfTitle,
+  },
   data() {
     return {
-      TitleList: [
-        "Question_BW0ItEaymH3TkD6S15JF",
-        "Question_5fgqjSBwTPG7KUV3it6O",
-        "Question_X3wF8QlTyi4mZkDp9Kae",
-        "Question_YWXHr4G6Cl7bEm9iF2kQ",
-      ],
-      sortOrder: true,
+      TitleList: [],
+      ascending: true,
     };
   },
   computed: {
@@ -77,18 +88,19 @@ export default {
   },
   watch: {
     SelectedKnowledge() {
-      const listObj = knowledge2Titles.find(
-        (obj) => obj.knowledge === this.SelectedKnowledge
-      );
-      this.TitleList = TitleListSorted(listObj.titleArr,this.sortOrder);
-      // 默认全选所有题目
+      console.log("!@#@$!");
       if (clusterStore().selected_knowledge == "") {
-        this.TitleList = TitleListSorted(AllTitleList,this.sortOrder);
+        this.TitleList = TitleListSorted(AllTitleList, this.ascending);
+      } else {
+        const listObj = knowledge2Titles.find(
+          (obj) => obj.knowledge === this.SelectedKnowledge
+        );
+        this.TitleList = TitleListSorted(listObj.titleArr, this.ascending);
       }
     },
-    sortOrder() {
-      this.TitleList = TitleListSorted(this.TitleList, this.sortOrder);
-    }
+    ascending() {
+      this.TitleList = TitleListSorted(this.TitleList, this.ascending);
+    },
   },
   methods: {
     findObjectByTitleID(tid) {
