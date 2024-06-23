@@ -15,7 +15,8 @@ export const clusterStore = defineStore('cluster', {
                 show: false,
                 title: null,
                 score: null,
-                sbmnum: null
+                sbmnum: null,
+                difficulty: null,
             },
         }
     },

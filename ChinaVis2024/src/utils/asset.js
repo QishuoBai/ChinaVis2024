@@ -148,6 +148,46 @@ const colorOfRose = (num) => {
       return "red";
   }
 };
+const AllTitleList = [
+  "Question_bumGRTJ0c8p4v5D6eHZa",
+  "Question_62XbhBvJ8NUSnApgDL94",
+  "Question_ZTbD7mxr2OUp8Fz6iNjy",
+  "Question_xqlJkmRaP0otZcX4fK3W",
+  "Question_FNg8X9v5zcbB1tQrxHR3",
+  "Question_hZ5wXofebmTlzKB1jNcP",
+  "Question_X3wF8QlTyi4mZkDp9Kae",
+  "Question_oCjnFLbIs4Uxwek9rBpu",
+  "Question_EhVPdmlB31M8WKGqL0wc",
+  "Question_UXqN1F7G3Sbldz02vZne",
+  "Question_x2Fy7rZ3SwYl9jMQkpOD",
+  "Question_BW0ItEaymH3TkD6S15JF",
+  "Question_h7pXNg80nJbw1C4kAPRm",
+  "Question_rvB9mVE6Kbd8jAY4NwPx",
+  "Question_q7OpB2zCMmW9wS8uNt3H",
+  "Question_YWXHr4G6Cl7bEm9iF2kQ",
+  "Question_5fgqjSBwTPG7KUV3it6O",
+  "Question_Az73sM0rHfWVKuc4X2kL",
+  "Question_Ou3f2Wt9BqExm5DpN7Zk",
+  "Question_Mh4CZIsrEfxkP1wXtOYV",
+  "Question_lU2wvHSZq7m43xiVroBc",
+  "Question_Ej5mBw9rsOUKkFycGvz2",
+  "Question_pVKXjZn0BkSwYcsa7C31",
+  "Question_QRm48lXxzdP7Tn1WgNOf",
+  "Question_Jr4Wz5jLqmN01KUwHa7g",
+  "Question_7NJzCXUPcvQF4Mkfh9Wr",
+  "Question_n2BTxIGw1Mc3Zo6RLdUe",
+  "Question_NixCn84GdK2tySa5rB1V",
+  "Question_TmKaGvfNoXYq4FZ2JrBu",
+  "Question_s6VmP1G4UbEQWRYHK9Fd",
+  "Question_tgOjrpZLw4RdVzQx85h6",
+  "Question_4nHcauCQ0Y6Pm8DgKlLo",
+  "Question_6RQj2gF3OeK5AmDvThUV",
+  "Question_3MwAFlmNO8EKrpY5zjUd",
+  "Question_x2L7AqbMuTjCwPFy6vNr",
+  "Question_VgKw8PjY1FR6cm2QI9XW",
+  "Question_3oPyUzDmQtcMfLpGZ0jW",
+  "Question_fZrP3FJ4ebUogW9V7taS",
+];
 const colorOfTitle = (num) => {
   switch (num) {
     case 0:
@@ -189,6 +229,167 @@ const knowledgeCount = [
   { name: "y9W5d", num: 11 },
 ];
 
+const TitleListSorted = (list, ascending = true) => {
+  // 题目难度表，不精确，仅用于排序
+  const DifTable = [
+    {
+      TitleId: "Question_q7OpB2zCMmW9wS8uNt3H",
+      Difficulty: -5.135079666020619,
+    },
+    { TitleId: "Question_fZrP3FJ4ebUogW9V7taS", Difficulty: -9.6033969863146 },
+    {
+      TitleId: "Question_3oPyUzDmQtcMfLpGZ0jW",
+      Difficulty: -13.383556948711185,
+    },
+    {
+      TitleId: "Question_BW0ItEaymH3TkD6S15JF",
+      Difficulty: -16.403623003365837,
+    },
+    {
+      TitleId: "Question_n2BTxIGw1Mc3Zo6RLdUe",
+      Difficulty: -16.503525305410122,
+    },
+    {
+      TitleId: "Question_xqlJkmRaP0otZcX4fK3W",
+      Difficulty: -18.04002694998522,
+    },
+    {
+      TitleId: "Question_VgKw8PjY1FR6cm2QI9XW",
+      Difficulty: -22.143835727522845,
+    },
+    {
+      TitleId: "Question_pVKXjZn0BkSwYcsa7C31",
+      Difficulty: -23.230763253354752,
+    },
+    {
+      TitleId: "Question_Mh4CZIsrEfxkP1wXtOYV",
+      Difficulty: -25.38554125158184,
+    },
+    {
+      TitleId: "Question_s6VmP1G4UbEQWRYHK9Fd",
+      Difficulty: -25.537480079316495,
+    },
+    {
+      TitleId: "Question_h7pXNg80nJbw1C4kAPRm",
+      Difficulty: -26.354244713619707,
+    },
+    {
+      TitleId: "Question_TmKaGvfNoXYq4FZ2JrBu",
+      Difficulty: -26.537059438211084,
+    },
+    {
+      TitleId: "Question_x2Fy7rZ3SwYl9jMQkpOD",
+      Difficulty: -27.483861443885914,
+    },
+    {
+      TitleId: "Question_YWXHr4G6Cl7bEm9iF2kQ",
+      Difficulty: -28.443706491103868,
+    },
+    {
+      TitleId: "Question_3MwAFlmNO8EKrpY5zjUd",
+      Difficulty: -28.48840155985261,
+    },
+    {
+      TitleId: "Question_Jr4Wz5jLqmN01KUwHa7g",
+      Difficulty: -29.408909164364594,
+    },
+    {
+      TitleId: "Question_Ej5mBw9rsOUKkFycGvz2",
+      Difficulty: -29.554257900864364,
+    },
+    {
+      TitleId: "Question_FNg8X9v5zcbB1tQrxHR3",
+      Difficulty: -31.22510320188254,
+    },
+    {
+      TitleId: "Question_6RQj2gF3OeK5AmDvThUV",
+      Difficulty: -33.01187280988765,
+    },
+    {
+      TitleId: "Question_62XbhBvJ8NUSnApgDL94",
+      Difficulty: -33.43369564181648,
+    },
+    {
+      TitleId: "Question_lU2wvHSZq7m43xiVroBc",
+      Difficulty: -33.67150991823767,
+    },
+    {
+      TitleId: "Question_tgOjrpZLw4RdVzQx85h6",
+      Difficulty: -34.34826645401065,
+    },
+    {
+      TitleId: "Question_EhVPdmlB31M8WKGqL0wc",
+      Difficulty: -34.476875979118134,
+    },
+    {
+      TitleId: "Question_5fgqjSBwTPG7KUV3it6O",
+      Difficulty: -34.88332812270592,
+    },
+    {
+      TitleId: "Question_4nHcauCQ0Y6Pm8DgKlLo",
+      Difficulty: -35.20869472789116,
+    },
+    {
+      TitleId: "Question_hZ5wXofebmTlzKB1jNcP",
+      Difficulty: -35.705958638190445,
+    },
+    {
+      TitleId: "Question_oCjnFLbIs4Uxwek9rBpu",
+      Difficulty: -36.86114374106646,
+    },
+    {
+      TitleId: "Question_X3wF8QlTyi4mZkDp9Kae",
+      Difficulty: -37.36946430803101,
+    },
+    {
+      TitleId: "Question_7NJzCXUPcvQF4Mkfh9Wr",
+      Difficulty: -37.88752552153268,
+    },
+    {
+      TitleId: "Question_NixCn84GdK2tySa5rB1V",
+      Difficulty: -38.011310564633575,
+    },
+    {
+      TitleId: "Question_Az73sM0rHfWVKuc4X2kL",
+      Difficulty: -38.64344384497097,
+    },
+    {
+      TitleId: "Question_QRm48lXxzdP7Tn1WgNOf",
+      Difficulty: -39.441481594714446,
+    },
+    {
+      TitleId: "Question_x2L7AqbMuTjCwPFy6vNr",
+      Difficulty: -40.05531164679823,
+    },
+    { TitleId: "Question_ZTbD7mxr2OUp8Fz6iNjy", Difficulty: -42.5012300381522 },
+    {
+      TitleId: "Question_Ou3f2Wt9BqExm5DpN7Zk",
+      Difficulty: -42.71202606635071,
+    },
+    {
+      TitleId: "Question_rvB9mVE6Kbd8jAY4NwPx",
+      Difficulty: -43.14955920873508,
+    },
+    {
+      TitleId: "Question_bumGRTJ0c8p4v5D6eHZa",
+      Difficulty: -43.48723815444584,
+    },
+    {
+      TitleId: "Question_UXqN1F7G3Sbldz02vZne",
+      Difficulty: -46.38846478180081,
+    },
+  ];
+  if (list.length <= 1) return list;
+  const findDif = (tid) => {
+    return DifTable.find((obj) => obj.TitleId === tid).Difficulty;
+  };
+  list.sort((t1, t2) => {
+    if (ascending) return findDif(t1) - findDif(t2);
+    else return findDif(t2) - findDif(t1);
+  });
+
+  return list;
+};
 export {
   knowledgeOrder,
   knowledge2Titles,
@@ -197,4 +398,6 @@ export {
   colorOfStack,
   subknowledgeCount,
   knowledgeCount,
+  AllTitleList,
+  TitleListSorted,
 };
