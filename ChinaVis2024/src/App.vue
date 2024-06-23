@@ -5,8 +5,8 @@
       class="border-b-thin pa-1 px-3 bg-grey-darken-4 d-flex flex-row justify-space-between align-center"
     >
       <div class="text-h6 d-flex flex-row align-center">
-        <img src="/logo_white_1.png" style="height: 30px;"/>
-        <div>LearnClusterVis</div>
+        <img src="/logo_white.png" style="height: 30px;"/>
+        <div class="ml-2">LearnClusterVis</div>
       </div>
       <div class="d-flex flex-row align-center text-body-2">
         <div class="d-flex flex-row align-end mt-1">
