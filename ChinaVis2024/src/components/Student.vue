@@ -129,14 +129,21 @@ export default {
       });
     },
     selected_knowledge(newValue) {
-      console.log("!!@!#@!");
-      console.log(newValue);
-      console.log(d3.selectAll(".student-view-knowledge-overlay"));
-      d3.selectAll(".student-view-knowledge-overlay")
-        .data(knowledges_titles_range)
-        .attr("visibility", (d) =>
-          newValue == "" || newValue == d.name ? "hidden" : "visible"
+      if (newValue == "") {
+        d3.selectAll(".student-view-knowledge-overlay").attr(
+          "visibility",
+          "hidden"
         );
+      } else {
+        d3.selectAll(".student-view-knowledge-overlay").attr(
+          "visibility",
+          "visible"
+        );
+        d3.selectAll(`.student-view-knowledge-overlay-${newValue}`).attr(
+          "visibility",
+          "hidden"
+        );
+      }
     },
   },
   mounted() {},
@@ -403,11 +410,7 @@ export default {
           .attr("fill", "white")
           .attr("opacity", 0.85)
           .attr("transform", `translate(-${width} 0)`)
-          .attr("visibility", (d) =>
-            this.selected_knowledge == "" || this.selected_knowledge == d.name
-              ? "hidden"
-              : "visible"
-          );
+          .attr("visibility", d => (clusterStore().selected_knowledge == "" || clusterStore().selected_knowledge == d.name)?'hidden':'visible');
       });
     },
     changeSelectedFeature() {
