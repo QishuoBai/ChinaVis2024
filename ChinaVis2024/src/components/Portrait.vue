@@ -295,7 +295,7 @@ export default {
         .append("stop")
         .attr("offset", "100%")
         .attr("stop-color", this.cluster_color[cid - 1])
-        .attr("stop-opacity", 0.1);
+        .attr("stop-opacity", 0.15);
       g_inner
         .append("path")
         .datum(features_xy)

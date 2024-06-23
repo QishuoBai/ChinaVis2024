@@ -48,7 +48,7 @@
     </div>
     <div
       v-if="tooltip.show"
-      id="student-view-tooltip-card"
+      id="student-view-tooltip"
       class="rounded-pill bg-grey-lighten-2 text-body-2 d-flex flex-row align-center justify-center pa-2"
       style="position: absolute; height: 30px"
     >
@@ -180,7 +180,7 @@ export default {
             this.tooltip.text = d.title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -214,7 +214,7 @@ export default {
             this.tooltip.text = d.title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -240,7 +240,7 @@ export default {
             this.tooltip.text = student_view_data.titles[d].title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });
@@ -282,7 +282,7 @@ export default {
             this.tooltip.text = student_view_data.titles[d].title_ID;
             this.tooltip.show = true;
             this.$nextTick(() => {
-              d3.select("#student-view-tooltip-card")
+              d3.select("#student-view-tooltip")
                 .style("left", e.clientX - 280 + "px")
                 .style("top", e.clientY - 15 + "px");
             });

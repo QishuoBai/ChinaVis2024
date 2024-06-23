@@ -67,8 +67,8 @@ export default {
           sbmnum: data.t_mean_sbmnum.toFixed(2),
         };
         d3.select("#TitleTooltip")
-          .style("left", e.clientX + 5 + "px")
-          .style("top", e.clientY + 5 + "px");
+          .style("left", e.clientX + 20 + "px")
+          .style("top", e.clientY + "px");
       };
       circles
         .append("circle")
