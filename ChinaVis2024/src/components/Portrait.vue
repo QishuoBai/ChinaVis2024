@@ -92,9 +92,6 @@ export default {
     selected_students() {
       return clusterStore().selected_students;
     },
-    test() {
-      return clusterStore().test;
-    },
   },
   watch: {
     cluster_result() {
@@ -108,9 +105,6 @@ export default {
         this.draw_cluster(cid);
         this.draw_legend();
       });
-    },
-    test() {
-      console.log("test");
     },
   },
   mounted() {

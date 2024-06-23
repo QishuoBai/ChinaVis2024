@@ -211,11 +211,8 @@ export default {
           this.selected.stu_IDs.includes(d.student_ID) ? "visible" : "hidden"
         )
         .attr("cursor", "pointer")
-        .on("click", this.EventClick);
-        this.brush = d3.brush()
-            .on("brush", this.EventBrushing)
-            .on("end", this.EventBrushEnd)
-            .on("mouseover", (e, d) => {
+        .on("click", this.EventClick)
+        .on("mouseover", (e, d) => {
             if(this.brush_mode) return;
             this.tooltip.text = d.student_ID;
             this.tooltip.show = true;
@@ -228,7 +225,10 @@ export default {
           .on("mouseout", () => {
             if(this.brush_mode) return;
             this.tooltip.show = false;
-          });
+          });;
+        this.brush = d3.brush()
+            .on("brush", this.EventBrushing)
+            .on("end", this.EventBrushEnd);
         
     },
     clickCluster(index) {
