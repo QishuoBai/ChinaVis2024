@@ -229,9 +229,8 @@ const knowledgeCount = [
   { name: "y9W5d", num: 11 },
 ];
 
-const TitleListSorted = (list, ascending = true) => {
-  // 题目难度表，不精确，仅用于排序
-  const DifTable = [
+// 题目难度表，不精确，仅用于排序
+const DifTable = [
     {
       TitleId: "Question_q7OpB2zCMmW9wS8uNt3H",
       Difficulty: -5.135079666020619,
@@ -379,6 +378,9 @@ const TitleListSorted = (list, ascending = true) => {
       Difficulty: -46.38846478180081,
     },
   ];
+
+const TitleListSorted = (list, ascending = true) => {
+  
   if (list.length <= 1) return list;
   const findDif = (tid) => {
     return DifTable.find((obj) => obj.TitleId === tid).Difficulty;
@@ -400,4 +402,5 @@ export {
   knowledgeCount,
   AllTitleList,
   TitleListSorted,
+  DifTable
 };

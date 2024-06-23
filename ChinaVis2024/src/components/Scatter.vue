@@ -249,7 +249,7 @@ export default {
         );
       } else {
         this.selected.stu_IDs.push(d.student_ID);
-        console.log(d.student_ID);
+        // console.log(d.student_ID);
       }
       this.hightlightSelected();
       clusterStore().selected_students = [...this.selected.stu_IDs];

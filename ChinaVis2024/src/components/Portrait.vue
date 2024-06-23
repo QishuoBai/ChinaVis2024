@@ -396,7 +396,7 @@ export default {
         .attr("stroke", "none")
         .attr("cursor", "pointer")
         .on("click", (e, d) => {
-          console.log(d);
+        //   console.log(d);
           if (clusterStore().selected_knowledge == d) {
             clusterStore().selected_knowledge = "";
           } else {

@@ -390,7 +390,7 @@ export default {
           tmp += d;
         });
         // 画一个遮罩层
-        console.log(knowledges_titles_range);
+        // console.log(knowledges_titles_range);
         svg
           .append("g")
           .selectAll("rect")

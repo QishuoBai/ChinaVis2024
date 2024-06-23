@@ -47,7 +47,7 @@
         </v-card-title>
         <v-card-text class="text-body-2 mt-2 mb-0 text-no-wrap">
           <div class="d-flex flex-row mt-1">
-            <div class="w-50">待讨论Difficulty:</div>
+            <div class="w-50">Difficulty:</div>
             <div>{{ this.Info_Tooltip.difficulty }}</div>
           </div>
           <div class="d-flex flex-row mt-1">
@@ -88,7 +88,6 @@ export default {
   },
   watch: {
     SelectedKnowledge() {
-      console.log("!@#@$!");
       if (clusterStore().selected_knowledge == "") {
         this.TitleList = TitleListSorted(AllTitleList, this.ascending);
       } else {

@@ -14,8 +14,21 @@
 </template>
 <script>
 import * as d3 from "d3";
-import { colorOfStack } from "@/utils/asset";
+import { colorOfStack, DifTable } from "@/utils/asset";
 import { clusterStore } from "@/store";
+
+const difficulty_range = [
+  d3.min(DifTable, (d) => d.Difficulty),
+  d3.max(DifTable, (d) => d.Difficulty),
+];
+
+const difficulty_level_scale = d3
+  .scaleThreshold()
+  .domain([
+    difficulty_range[0] + (1 / 3) * (difficulty_range[1] - difficulty_range[0]),
+    difficulty_range[0] + (2 / 3) * (difficulty_range[1] - difficulty_range[0]),
+  ])
+  .range(["Easy", "Medium", "Hard"]);
 export default {
   data() {
     return {
@@ -37,7 +50,7 @@ export default {
       bandSegNum: 10,
       scoreBarPaddingLeft: 35,
       scoreLabelTextSize: 12,
-      scoreNumTextSize: 10
+      scoreNumTextSize: 10,
     };
   },
   props: {
@@ -73,10 +86,18 @@ export default {
         .attr("name", "score_distribute_bars")
         .attr(
           "transform",
-          `translate(${this.MarginLeft + this.scoreBarPaddingLeft}, ${this.Height - this.MarginBottom})`
+          `translate(${this.MarginLeft + this.scoreBarPaddingLeft}, ${
+            this.Height - this.MarginBottom
+          })`
         );
-        g.append('g').append('text').text('Score').attr('font-size', this.scoreLabelTextSize).attr('text-anchor', 'end').attr('x', -10).attr('alignment-baseline','middle')
-        .attr('opacity', 1);
+      g.append("g")
+        .append("text")
+        .text("Score")
+        .attr("font-size", this.scoreLabelTextSize)
+        .attr("text-anchor", "end")
+        .attr("x", -10)
+        .attr("alignment-baseline", "middle")
+        .attr("opacity", 1);
       const size_scale = d3
         .scaleLinear()
         .domain([0, 1])
@@ -143,7 +164,7 @@ export default {
         .domain([-50, -5])
         .range([this.AreaHeight, 0]);
       const handleMouseOverCircle = (e) => {
-        // console.log(e.target.getAttribute("tid"), data.title_ID);
+        console.log(e);
         clusterStore().hoverTitleInfo = {
           show: true,
           title: data.title_ID,
@@ -152,11 +173,11 @@ export default {
           )}/${data.t_Fullscore}`,
           // score: (data.t_Fullscore*data.t_mean_score/100).toFixed(2),
           sbmnum: data.t_mean_sbmnum.toFixed(2),
-          difficulty: this.Difficulty.toFixed(2),
+          difficulty: difficulty_level_scale(this.Difficulty),
         };
         d3.select("#TitleTooltip")
           .style("left", e.clientX + 20 + "px")
-          .style("top", e.clientY + "px");
+          .style("bottom", (window.innerHeight - e.clientY) + "px");
       };
 
       // 绘制区域
@@ -201,13 +222,15 @@ export default {
       // 绘制轴
       g.append("g")
         .attr("transform", `translate(${0}, ${this.AreaHeight})`)
-        .attr('opacity', 0.7)
+        .attr("opacity", 0.7)
         .call(
           d3
             .axisBottom(xScale)
             .ticks(5)
             .tickSizeOuter(0)
-            .tickFormat((d) => new Date(d * 1000).toLocaleString().split(' ')[0]) //修改标签为正常时间格式
+            .tickFormat(
+              (d) => new Date(d * 1000).toLocaleString().split(" ")[0]
+            ) //修改标签为正常时间格式
         )
         .call((g) =>
           g
@@ -215,7 +238,8 @@ export default {
             .attr("x", 0)
             .attr("y", -4)
             .attr("fill", "black")
-            .attr("text-anchor", "start").attr("alignment-baseline","bottom")
+            .attr("text-anchor", "start")
+            .attr("alignment-baseline", "bottom")
             .text("Submit Time Line →")
         );
     },
