@@ -60,7 +60,7 @@ export default {
       const progressScale = d3
         .scaleLinear()
         .domain([0, 0.5])
-        .range([1, this.mini_radius * 2.5]);
+        .range([1, this.mini_radius * 4.5]);
       const student_id = data.student_ID;
       const cluster = this.cluster_result.find(
         (item) => item.student_ID === student_id

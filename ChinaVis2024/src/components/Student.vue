@@ -71,6 +71,7 @@ const width = 300;
 const margin2tree = 8;
 const max_length = width / 2 - padding_x - sub_knowledge_width - margin2tree;
 const rightScale = d3.scaleLinear().domain([0, 1]).range([0, max_length]);
+const tooltip_translate_x = 150;
 
 const knowledges = ks;
 
@@ -192,7 +193,7 @@ export default {
             this.tooltip.show = true;
             this.$nextTick(() => {
               d3.select("#student-view-tooltip")
-                .style("left", e.clientX - 280 + "px")
+                .style("left", e.clientX - tooltip_translate_x + "px")
                 .style("top", e.clientY - 15 + "px");
             });
           })
@@ -226,7 +227,7 @@ export default {
             this.tooltip.show = true;
             this.$nextTick(() => {
               d3.select("#student-view-tooltip")
-                .style("left", e.clientX - 280 + "px")
+                .style("left", e.clientX - tooltip_translate_x + "px")
                 .style("top", e.clientY - 15 + "px");
             });
           })
@@ -252,7 +253,7 @@ export default {
             this.tooltip.show = true;
             this.$nextTick(() => {
               d3.select("#student-view-tooltip")
-                .style("left", e.clientX - 280 + "px")
+                .style("left", e.clientX - tooltip_translate_x + "px")
                 .style("top", e.clientY - 15 + "px");
             });
           })
@@ -294,7 +295,7 @@ export default {
             this.tooltip.show = true;
             this.$nextTick(() => {
               d3.select("#student-view-tooltip")
-                .style("left", e.clientX - 280 + "px")
+                .style("left", e.clientX - tooltip_translate_x + "px")
                 .style("top", e.clientY - 15 + "px");
             });
           })

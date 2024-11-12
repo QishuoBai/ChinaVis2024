@@ -41,7 +41,7 @@
         style="height: auto; width: auto; position: absolute; z-index: 999"
       >
         <v-card-title>
-          <v-chip>
+          <v-chip style="width: 250px;" class="d-flex flex-row align-center justify-center">
             {{ this.Info_Tooltip.title }}
           </v-chip>
         </v-card-title>
