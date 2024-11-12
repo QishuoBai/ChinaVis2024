@@ -160,11 +160,6 @@ export default {
   },
   data() {
     return {
-      classes: [
-        "All",
-        ...Array.from({ length: 15 }, (_, i) => `Class${i + 1}`),
-      ],
-      majors: ["All", "J23517", "J40192", "J57489", "J78901", "J87654"],
       dialog: false,
       cluster_config: {
         class: "All",
@@ -225,6 +220,14 @@ export default {
       color_dark: d3.schemeCategory10[0] + "ff",
       color_light: d3.schemeCategory10[0] + "1f",
     };
+  },
+  computed: {
+    classes() {
+      return ["All", ...new Set(data_stu_features.map((d) => d.class))].sort();
+    },
+    majors() {
+      return ["All", ...new Set(data_stu_features.map((d) => d.major))].sort();
+    },
   },
   methods: {
     draw_feature_density_plot(name, index) {

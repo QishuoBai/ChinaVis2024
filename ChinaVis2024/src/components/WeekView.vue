@@ -7,18 +7,18 @@
       class="flex-grow-1 position-relative"
       style="overflow: scroll; height: 0px; z-index: 0"
     >
-      <div class="h-100 position-absolute top-0 bg-white d-flex flex-row"  style="width: 2300px; z-index: 0;">
+      <div class="h-100 position-absolute top-0 bg-white d-flex flex-row"  style="width: 1900px; z-index: 0;">
         <div :style="{ width: `${layout.user_icon_width}px` }"></div>
-        <div v-for="wk in 22"
+        <div v-for="wk in 18"
         :key="wk" :style="{ width: `${layout.item_width}px` ,backgroundColor: wk % 2 != 0 ? gray_color : '',}"></div>
 
       </div>
-      <div style="width: 2300px;z-index: 1;">
+      <div style="width: 1900px;z-index: 1;">
         <div class="StudentsContainer h-100">
           <div class="d-flex flex-row position-sticky top-0" style="z-index: 99">
             <div :style="{ width: `${layout.user_icon_width}px` }"></div>
             <div
-              v-for="wk in 22"
+              v-for="wk in 18"
               :key="wk"
               :style="{
                 width: `${layout.item_width}px`,

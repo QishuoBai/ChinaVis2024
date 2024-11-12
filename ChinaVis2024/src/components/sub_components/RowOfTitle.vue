@@ -14,8 +14,9 @@
 </template>
 <script>
 import * as d3 from "d3";
-import { colorOfStack, DifTable } from "@/utils/asset";
+import { DifTable } from "@/utils/asset";
 import { clusterStore } from "@/store";
+import titleViewData from "@/data/title_view_data.json";
 
 const difficulty_range = [
   d3.min(DifTable, (d) => d.Difficulty),
@@ -133,9 +134,17 @@ export default {
         .append("g")
         .attr("name", "Submits Time and Circle")
         .attr("transform", `translate(${this.MarginLeft}, ${this.MarginTop})`);
+      let tmp_min_list = [];
+      titleViewData.forEach((d) => {
+        tmp_min_list.push(d3.min(d.t_SubmitArr));
+      });
+      let tmp_max_list = [];
+      titleViewData.forEach((d) => {
+        tmp_max_list.push(d3.max(d.t_SubmitArr));
+      });
       const xScale = d3
         .scaleLinear()
-        .domain([1693471583.0, 1706158726.0]) //时间最大最小
+        .domain([d3.min(tmp_min_list), d3.max(tmp_max_list)]) //时间最大最小
         .range([0, this.AreaLength]);
       const bins = d3.bin().domain(xScale.domain()).thresholds(40)(
         data.t_SubmitArr
@@ -177,7 +186,7 @@ export default {
         };
         d3.select("#TitleTooltip")
           .style("left", e.clientX + 20 + "px")
-          .style("bottom", (window.innerHeight - e.clientY) + "px");
+          .style("bottom", window.innerHeight - e.clientY + "px");
       };
 
       // 绘制区域

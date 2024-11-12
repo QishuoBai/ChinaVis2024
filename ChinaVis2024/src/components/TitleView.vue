@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import TitleViewData from "../data/TitleViewData.json";
+import TitleViewData from "@/data/title_view_data.json";
 import RowOfTitle from "@/components/sub_components/RowOfTitle.vue";
 import { clusterStore } from "@/store";
 import { knowledge2Titles, AllTitleList, TitleListSorted } from "@/utils/asset";

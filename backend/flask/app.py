@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-stu_features = pd.read_csv('../人题数据/stu_features.csv')
+stu_features = pd.read_csv('../../sjtu_dataset/人题数据/stu_features.csv')
 
 # 主页路由
 @app.route('/hello')

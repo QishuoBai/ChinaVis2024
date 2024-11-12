@@ -36,7 +36,7 @@
               <v-btn variant="text" class="text-body-2">Score</v-btn>
             </div>
           </div>
-          <div ref="svg_container" style="height: 600px"></div>
+          <div ref="svg_container" style="height: 400px"></div>
         </v-card-text>
       </v-card>
     </div>
@@ -59,29 +59,20 @@
 
 <script>
 import * as d3 from "d3";
-import { knowledgeCount, subknowledgeCount } from "@/utils/asset";
+import { ks, knowledgeCount, subknowledgeCount } from "@/utils/asset";
 import student_view_data from "@/data/student_view_data.json";
 import { clusterStore } from "@/store";
 import stu_features from "@/data/stu_features.json";
 
 const padding_y = 5;
-const padding_x = 10;
+const padding_x = 40;
 const sub_knowledge_width = 35;
 const width = 300;
 const margin2tree = 8;
 const max_length = width / 2 - padding_x - sub_knowledge_width - margin2tree;
 const rightScale = d3.scaleLinear().domain([0, 1]).range([0, max_length]);
 
-const knowledges = [
-  "b3C9s",
-  "g7R2j",
-  "k4W1c",
-  "m3D1v",
-  "r8S3g",
-  "s8Y2f",
-  "t5V9e",
-  "y9W5d",
-];
+const knowledges = ks;
 
 const knowledges_titles_range = [];
 let prev_num = 0;
@@ -178,7 +169,7 @@ export default {
         //   画右侧的背景
         const score_length_scale = d3
           .scaleLinear()
-          .domain([0, 4])
+          .domain([0, 1])
           .range([0, max_length]);
         svg
           .append("g")

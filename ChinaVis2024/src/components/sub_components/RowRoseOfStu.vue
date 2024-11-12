@@ -7,7 +7,7 @@
 </template>
 <script>
 import * as d3 from "d3";
-import { knowledgeOrder, colorOfRose } from "@/utils/asset";
+import { knowledgeOrder } from "@/utils/asset";
 import { clusterStore } from "@/store";
 import {adjustHexOpacity} from '@/utils/tool.js'
 export default {
@@ -15,7 +15,7 @@ export default {
     return {
       Width: 0,
       Height: 50,
-      RoseNum: 22,
+      RoseNum: 18,
       R_rose: 35,
       inner_radius: 15,
       mini_radius: 7,

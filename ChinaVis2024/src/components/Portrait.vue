@@ -38,19 +38,10 @@
 <script>
 import stu_features from "@/data/stu_features.json";
 import * as d3 from "d3";
-import { knowledgeOrder } from "@/utils/asset";
+import { ks, knowledgeOrder } from "@/utils/asset";
 import { clusterStore } from "@/store";
 
-const knowledges = [
-  "b3C9s",
-  "g7R2j",
-  "k4W1c",
-  "m3D1v",
-  "r8S3g",
-  "s8Y2f",
-  "t5V9e",
-  "y9W5d",
-];
+const knowledges = ks;
 
 const sub_knowledges = knowledgeOrder.array;
 const knowledges_sub_nums = knowledgeOrder.group.map((d) => d.length);
@@ -173,7 +164,7 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
-        .attr("class", (d) => `knowledge-highlight knowledge-${d}-highlight`)
+        .attr("class", (d) => `knowledge-highlight knowledge-${d.split(' ')[0]}-highlight`)
         .attr(
           "d",
           d3
@@ -429,7 +420,7 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
-        .attr("class", (d) => `knowledge-legend knowledge-legend-${d}`)
+        .attr("class", (d) => `knowledge-legend knowledge-legend-${d.split(' ')[0]}`)
         .attr(
           "d",
           d3
@@ -606,7 +597,7 @@ export default {
       );
       if (clusterStore().selected_knowledge != "") {
         d3.selectAll(
-          `.knowledge-${clusterStore().selected_knowledge}-highlight`
+          `.knowledge-${clusterStore().selected_knowledge.split(' ')[0]}-highlight`
         ).attr("visibility", "visible");
       }
     },
