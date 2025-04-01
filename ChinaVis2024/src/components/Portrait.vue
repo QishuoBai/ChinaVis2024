@@ -118,7 +118,8 @@ export default {
         .append("svg")
         .attr("viewBox", `0 0 ${svg_width} ${svg_height}`)
         .attr("width", svg_width)
-        .attr("height", svg_height);
+        .attr("height", svg_height)
+        .attr("overflow", "visible");
       // 画辅助线
       let g = svg.append("g");
       g.append("circle")
@@ -164,7 +165,10 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
-        .attr("class", (d) => `knowledge-highlight knowledge-${d.split(' ')[0]}-highlight`)
+        .attr(
+          "class",
+          (d) => `knowledge-highlight knowledge-${d.split(" ")[0]}-highlight`
+        )
         .attr(
           "d",
           d3
@@ -178,7 +182,9 @@ export default {
         .attr("fill", this.cluster_color[cid - 1])
         .attr("stroke", "none")
         .attr("cursor", "pointer")
-        .attr("visibility", d => (clusterStore().selected_knowledge == d)?'visible':'hidden')
+        .attr("visibility", (d) =>
+          clusterStore().selected_knowledge == d ? "visible" : "hidden"
+        )
         .attr("opacity", 0.3);
       let cur_cluster_stuids = this.cluster_result
         .filter((d) => d.cluster == cid - 1)
@@ -277,7 +283,7 @@ export default {
         .append("stop")
         .attr("offset", "0%")
         // .attr("stop-color", this.cluster_color[cid - 1])
-        .attr("stop-color", '#fff')
+        .attr("stop-color", "#fff")
         .attr("stop-opacity", 0);
       gradient
         .append("stop")
@@ -291,7 +297,19 @@ export default {
         .attr("fill", `url(#radial-gradient-${cid})`)
         .attr("fill-opacity", 1)
         .attr("stroke", this.cluster_color[cid - 1])
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .on("mouseover", (e, d) => {
+          d3.selectAll(`.portrait-${cid}-legend-inner`).attr(
+            "visibility",
+            "visible"
+          );
+        })
+        .on("mouseout", (e, d) => {
+          d3.selectAll(`.portrait-${cid}-legend-inner`).attr(
+            "visibility",
+            "hidden"
+          );
+        });
       // 画高亮学生
       const selected_students = this.selected_students.filter((d) =>
         cur_cluster_stuids.includes(d)
@@ -365,7 +383,19 @@ export default {
           .attr("fill", "none")
           .attr("fill-opacity", 0.5)
           .attr("stroke", "black")
-          .attr("stroke-width", 2);
+          .attr("stroke-width", 2)
+          .on("mouseover", (e, d) => {
+            d3.selectAll(`.portrait-${cid}-legend-inner`).attr(
+              "visibility",
+              "visible"
+            );
+          })
+          .on("mouseout", (e, d) => {
+            d3.selectAll(`.portrait-${cid}-legend-inner`).attr(
+              "visibility",
+              "hidden"
+            );
+          });
       }
       //   画一个对知识点的透明圆环，以供点击
       g.append("g")
@@ -387,14 +417,77 @@ export default {
         .attr("stroke", "none")
         .attr("cursor", "pointer")
         .on("click", (e, d) => {
-        //   console.log(d);
+          //   console.log(d);
           if (clusterStore().selected_knowledge == d) {
             clusterStore().selected_knowledge = "";
           } else {
             clusterStore().selected_knowledge = d;
           }
           this.highlightSelectedKnowledge();
+        })
+        .on("mouseover", (e, d) => {
+          d3.selectAll(`.portrait-${cid}-legend-outer`).attr(
+            "visibility",
+            "visible"
+          );
+        })
+        .on("mouseout", (e, d) => {
+          d3.selectAll(`.portrait-${cid}-legend-outer`).attr(
+            "visibility",
+            "hidden"
+          );
         });
+      // 画鼠标悬停时显示的 legend 文本
+      svg
+        .append("g")
+        .attr("transform", `translate(${centerX} ${centerY})`)
+        .selectAll("text")
+        .data(knowledges)
+        .join("text")
+        .text((d) => d)
+        .attr("class", `portrait-${cid}-legend-outer`)
+        .attr("visibility", "hidden")
+        .attr("text-anchor", (d, i) => (i < 4 ? "start" : "end"))
+        .attr("alignment-baseline", "middle")
+        .attr(
+          "x",
+          (d, i) =>
+            (r + bar_height) *
+              Math.cos(i * (Math.PI / 4) + Math.PI / 8 - Math.PI / 2) +
+            (i < 4 ? 5 : -5)
+        )
+        .attr(
+          "y",
+          (d, i) =>
+            (r + bar_height) *
+            Math.sin(i * (Math.PI / 4) + Math.PI / 8 - Math.PI / 2)
+        )
+        .attr("font-size", 10);
+      svg
+        .append("g")
+        .selectAll("text")
+        .data(features_label)
+        .join("text")
+        .text((d) => d)
+        .attr("class", `portrait-${cid}-legend-inner`)
+        .attr("visibility", "hidden")
+        .attr(
+          "x",
+          (d, i) =>
+            centerX + r * 0.7 * Math.cos(i * (Math.PI / 4) - Math.PI / 2)
+        )
+        .attr(
+          "y",
+          (d, i) =>
+            centerY + r * 0.7 * Math.sin(i * (Math.PI / 4) - Math.PI / 2)
+        )
+        .attr("font-size", 10)
+        .attr("text-anchor", (d, i) => {
+          if (i == 0 || i == 4) return "middle";
+          if (i < 4) return "middle";
+          return "middle";
+        })
+        .attr("alignment-baseline", "middle");
     },
     draw_legend() {
       const height = this.$refs["legend-1"].clientHeight;
@@ -420,7 +513,10 @@ export default {
         .selectAll("path")
         .data(knowledges)
         .join("path")
-        .attr("class", (d) => `knowledge-legend knowledge-legend-${d.split(' ')[0]}`)
+        .attr(
+          "class",
+          (d) => `knowledge-legend knowledge-legend-${d.split(" ")[0]}`
+        )
         .attr(
           "d",
           d3
@@ -432,7 +528,7 @@ export default {
             .padAngle(0.01)
         )
         // .attr("fill", (d, i) => this.cluster_color[0])
-        .attr("fill", '#757575')
+        .attr("fill", "#757575")
         .attr("opacity", (d) =>
           clusterStore().selected_knowledge == "" ||
           clusterStore().selected_knowledge == d
@@ -577,7 +673,8 @@ export default {
         .attr("y1", centerY + r1 + label_mt + 15)
         .attr("x2", centerX - r1)
         .attr("y2", centerY + r1 + label_mt + 15)
-        .attr("stroke", "grey").attr('stroke-dasharray','4,5')
+        .attr("stroke", "grey")
+        .attr("stroke-dasharray", "4,5")
         .attr("stroke-width", 1);
       g.append("text")
         .attr("x", centerX + 5)
@@ -597,7 +694,9 @@ export default {
       );
       if (clusterStore().selected_knowledge != "") {
         d3.selectAll(
-          `.knowledge-${clusterStore().selected_knowledge.split(' ')[0]}-highlight`
+          `.knowledge-${
+            clusterStore().selected_knowledge.split(" ")[0]
+          }-highlight`
         ).attr("visibility", "visible");
       }
     },
